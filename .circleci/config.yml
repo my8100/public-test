@@ -57,7 +57,6 @@ jobs:
           condition: <<parameters.use-mysql>>
           steps:
             - run:
-                # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
                 # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
                 name: Waiting for MySQL to be ready
                 command: |
@@ -68,7 +67,17 @@ jobs:
                     sleep 1
                   done
                   echo Failed waiting for MySQL && exit 1
-
+            - run:
+                name: Install MySQL CLI; Import dummy data; run an example query
+                command: |
+                  # sudo apt-get install default-mysql-client
+                  # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
+                  # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
+                  # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
+                  # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
+                  # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_timertasks"
+                  # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
+                  # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
       - when:
           condition: <<parameters.use-postgresql>>
           steps:

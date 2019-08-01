@@ -38,7 +38,7 @@ def setup_database(DATABASE_PATH):
     elif enable_postgresql and (m_postgres or m_postgres_no_password):
         print('Found environment variable POSTGRESQL_URI: %s' % postgresql_uri)
         uri = postgresql_uri
-        if m_postgres
+        if m_postgres:
             setup_postgresql(*m_postgres.groups())
         else:
             username, host, port = m_postgres_no_password.groups()
