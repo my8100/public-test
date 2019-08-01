@@ -41,19 +41,6 @@ jobs:
                 name: Create virtual env in PY2
                 command: |
                   virtualenv ./venv
-      - when:
-          condition: <<parameters.use-mysql>>
-          steps:
-            - run:
-              name: Waiting for MySQL to be ready
-              command: |
-                for i in `seq 1 10`;
-                do
-                  nc -z 127.0.0.1 3306 && echo Success && exit 0
-                  echo -n .
-                  sleep 1
-                done
-                echo Failed waiting for MySQL && exit 1
 
       - unless:
           condition: <<parameters.is-py27>>
@@ -135,7 +122,6 @@ jobs:
           MYSQL_PASSWORD: passw0rd
     environment:
       SCRAPYDWEB_TESTMODE: True
-      ENABLE_MYSQL: True
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
   # py35:
