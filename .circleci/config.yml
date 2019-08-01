@@ -54,20 +54,8 @@ jobs:
                     sleep 1
                   done
                   echo Failed waiting for MySQL && exit 1
-            - run:
-                name: Install MySQL CLI; Import dummy data; run an example query
-                command: |
-                  sudo apt-get install default-mysql-client
-                  # sudo apt install mysql-client || sudo apt-get update && sudo apt install mysql-client
-                  # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
-                  # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
-                  # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
-                  mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
-                  mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_timertasks"
-                  mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
-                  mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
 
-      - unless: 
+      - unless:
           condition: <<parameters.is-py27>>
           steps:
             - run:
@@ -137,9 +125,9 @@ jobs:
       - image: circleci/python:2.7
       # https://circleci.com/docs/2.0/postgres-config/#example-mysql-project
       # Plugin caching_sha2_password could not be loaded
-      # - image: circleci/mysql:8.0.4
+      - image: circleci/mysql:8.0.4
       # https://circleci.com/docs/2.0/circleci-images/#mysql
-      - image: circleci/mysql:5.7.25
+      # - image: circleci/mysql:5.7.25
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: test_db
@@ -147,6 +135,7 @@ jobs:
           MYSQL_PASSWORD: passw0rd
     environment:
       SCRAPYDWEB_TESTMODE: True
+      # MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
   # py35:
