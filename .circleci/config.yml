@@ -8,23 +8,9 @@ jobs:
   # py37: &test-template
   py37:
     docker:
-      - image: circleci/python:2.7
-      # https://circleci.com/docs/2.0/circleci-images/#mysql
-      # Plugin caching_sha2_password could not be loaded
-      # - image: circleci/mysql:8.0.4
-      # - image: circleci/mysql:5.7-ram
-      - image: circleci/mysql:5.7.25
-        environment:
-          MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: test_db
-          MYSQL_USER: user
-          MYSQL_PASSWORD: passw0rd
+      - image: circleci/python:3.7
 
     working_directory: ~/repo
-
-    environment:
-      SCRAPYDWEB_TESTMODE: True
-      MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
     parameters:
       is-py27:
@@ -47,32 +33,6 @@ jobs:
             ls -l ~
 
       - checkout
-      # - run:
-          # name: Install MySQL CLI; Import dummy data; run an example query
-          # command: |
-            # sudo apt-get install default-mysql-client
-      - run:
-          name: Waiting for MySQL to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z 127.0.0.1 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
-      - run:
-          name: Install MySQL CLI; Import dummy data; run an example query
-          command: |
-            sudo apt-get install default-mysql-client
-            # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
-            # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
-            # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
-            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
-            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_timertasks"
-            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
-            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
-
       - when:
           condition: <<parameters.is-py27>>
           steps:
@@ -80,6 +40,27 @@ jobs:
                 name: Create virtual env in PY2
                 command: |
                   virtualenv ./venv
+              - run:
+                  name: Waiting for MySQL to be ready
+                  command: |
+                    for i in `seq 1 10`;
+                    do
+                      nc -z 127.0.0.1 3306 && echo Success && exit 0
+                      echo -n .
+                      sleep 1
+                    done
+                    echo Failed waiting for MySQL && exit 1
+              - run:
+                  name: Install MySQL CLI; Import dummy data; run an example query
+                  command: |
+                    sudo apt-get install default-mysql-client
+                    # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
+                    # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
+                    # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
+                    mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
+                    mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_timertasks"
+                    mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
+                    mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
       - unless:
           condition: <<parameters.is-py27>>
           steps:
@@ -144,10 +125,23 @@ jobs:
       - codecov/upload:
           file: coverage.xml
 
-  # py27:
-    # <<: *test-template
-    # docker:
-      # - image: circleci/python:2.7
+  py27:
+    <<: *test-template
+    docker:
+      - image: circleci/python:2.7
+      # https://circleci.com/docs/2.0/postgres-config/#example-mysql-project
+      # Plugin caching_sha2_password could not be loaded
+      # - image: circleci/mysql:8.0.4
+      # https://circleci.com/docs/2.0/circleci-images/#mysql
+      - image: circleci/mysql:5.7.25
+        environment:
+          MYSQL_ROOT_PASSWORD: rootpw
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: passw0rd
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
   # py35:
     # <<: *test-template
@@ -167,8 +161,8 @@ jobs:
 workflows:
   test:
     jobs:
-      # - py27:
-          # is-py27: true
+      - py27:
+          is-py27: true
       # - py35
       # - py36
       - py37
