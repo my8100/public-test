@@ -24,6 +24,9 @@ jobs:
       use-postgresql:
         type: boolean
         default: false
+      use-sqlite:
+        type: boolean
+        default: false
     steps:
       - run:
           name: Install telnet
@@ -149,6 +152,41 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:2.7
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      ENABLE_MYSQL: False
+      ENABLE_POSTGRESQL: False
+      ENABLE_SQLITE: False
+      SQLITE_URI: 'sqlite:////home/circleci/repo/scrapydweb_database'
+
+  # py35:
+    # <<: *test-template
+    # docker:
+      # - image: circleci/python:3.5
+
+  py36:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.6
+      # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
+      - image: circleci/postgres:9.6-alpine
+        environment:
+          POSTGRES_USER: circleci
+          # psycopg2.OperationalError: FATAL: database "circleci" does not exist
+          # https://discuss.circleci.com/t/django-postgresql-and-circleci/15032
+          POSTGRES_DB: circleci
+          POSTGRES_PASSWORD: passw0rd
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      ENABLE_MYSQL: False
+      ENABLE_POSTGRESQL: True
+      POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
+      # POSTGRESQL_URI: 'postgres://circleci@127.0.0.1:5432'
+
+  py37-git:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.7
       # https://circleci.com/docs/2.0/postgres-config/#example-mysql-project
       # Plugin caching_sha2_password could not be loaded
       # - image: circleci/mysql:8.0.4
@@ -165,44 +203,17 @@ jobs:
       # MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
-  # py35:
-    # <<: *test-template
-    # docker:
-      # - image: circleci/python:3.5
-
-  # py36:
-    # <<: *test-template
-    # docker:
-      # - image: circleci/python:3.6
-
-  py37-git:
-    <<: *test-template
-    docker:
-      - image: circleci/python:3.7
-      # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
-      - image: circleci/postgres:9.6-alpine
-        environment:
-          POSTGRES_USER: circleci
-          # psycopg2.OperationalError: FATAL: database "circleci" does not exist
-          # https://discuss.circleci.com/t/django-postgresql-and-circleci/15032
-          POSTGRES_DB: circleci
-          POSTGRES_PASSWORD: passw0rd
-    environment:
-      SCRAPYDWEB_TESTMODE: True
-      ENABLE_MYSQL: False
-      ENABLE_POSTGRESQL: True
-      # POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
-      POSTGRESQL_URI: 'postgres://circleci@127.0.0.1:5432'
 
 workflows:
   test:
     jobs:
-      # - py27:
-          # is-py27: true
-          # use-mysql: true
+      - py27:
+          is-py27: true
+          use-sqlite: true
       # - py35
-      # - py36
-      # - py37
+      - py36
+          use-postgresql: true
+      - py37
       - py37-git:
           use-git: true
-          use-postgresql: true
+          use-mysql: true
