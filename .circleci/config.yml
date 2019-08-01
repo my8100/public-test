@@ -157,7 +157,7 @@ workflows:
       - py27:
           is-py27: true
       # - py35
-      - py36
-      - py37
-      - py37-git:
-          use-git: true
+      # - py36
+      # - py37
+      # - py37-git:
+          # use-git: true
