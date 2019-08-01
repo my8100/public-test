@@ -177,7 +177,7 @@ jobs:
           POSTGRES_DB: circle_test
 
           # POSTGRES_ROOT_PASSWORD: rootpw
-          # POSTGRES_PASSWORD: passw0rd
+          POSTGRES_PASSWORD: passw0rd
     environment:
       SCRAPYDWEB_TESTMODE: True
       ENABLE_MYSQL: False
