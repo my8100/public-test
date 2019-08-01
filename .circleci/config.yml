@@ -75,10 +75,10 @@ jobs:
             - run:
                 name: Setup PSQL Databases
                 command: |
-                  sudo apt install -y postgresql-client
+                  # https://discuss.circleci.com/t/multiple-postgres-databases-in-circleci-2-0/23089
                   # createdb: could not connect to database template1: FATAL:  role "circleci" does not exist
-                  createdb -h localhost scrapydweb_apscheduler -O circleci
-                  createdb -h localhost scrapydweb_timertasks -O circleci
+                  # sudo apt install -y postgresql-client
+                  # createdb -h localhost scrapydweb_apscheduler -O circleci
 
       - run:
           name: Install dependencies
@@ -182,7 +182,8 @@ jobs:
       SCRAPYDWEB_TESTMODE: True
       ENABLE_MYSQL: False
       ENABLE_POSTGRESQL: True
-      POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
+      # POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
+      POSTGRESQL_URI: 'postgres://circleci@127.0.0.1:5432'
 
 workflows:
   test:

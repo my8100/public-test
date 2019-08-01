@@ -29,15 +29,20 @@ def setup_database(DATABASE_PATH):
     uri = ''
     m_mysql = re.match(r'mysql://(.+?):(.+?)@(.+?):(\d+)', mysql_uri)
     m_postgres = re.match(r'postgres://(.+?):(.+?)@(.+?):(\d+)', postgresql_uri)
+    m_postgres_no_password = re.match(r'postgres://(.+?)@(.+?):(\d+)', postgresql_uri)
     m_sqlite = re.match(r'sqlite:///(.+)$', sqlite_uri)
     if enable_mysql and m_mysql:
         print('Found environment variable MYSQL_URI: %s' % mysql_uri)
         uri = mysql_uri
         setup_mysql(*m_mysql.groups())
-    elif enable_postgresql and m_postgres:
+    elif enable_postgresql and (m_postgres or m_postgres_no_password):
         print('Found environment variable POSTGRESQL_URI: %s' % postgresql_uri)
         uri = postgresql_uri
-        setup_postgresql(*m_postgres.groups())
+        if m_postgres
+            setup_postgresql(*m_postgres.groups())
+        else:
+            username, host, port = m_postgres_no_password.groups()
+            setup_postgresql(username, None, host, port)
     elif enable_sqlite and m_sqlite:
         print('Found environment variable SQLITE_URI: %s' % sqlite_uri)
         folder_path = re.sub(r'\\', '/', os.path.abspath(m_sqlite.group(1)))
