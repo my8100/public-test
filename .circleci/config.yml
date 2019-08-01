@@ -13,7 +13,7 @@ jobs:
       - image: circleci/mysql:5.7-ram
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: scrapydweb_apscheduler
+          MYSQL_DATABASE: scrapydweb_apscheduler, scrapydweb_timertasks, scrapydweb_metadata, scrapydweb_jobs
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
 
