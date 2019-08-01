@@ -125,9 +125,9 @@ jobs:
       - image: circleci/python:2.7
       # https://circleci.com/docs/2.0/postgres-config/#example-mysql-project
       # Plugin caching_sha2_password could not be loaded
-      - image: circleci/mysql:8.0.4
+      # - image: circleci/mysql:8.0.4
       # https://circleci.com/docs/2.0/circleci-images/#mysql
-      # - image: circleci/mysql:5.7.25
+      - image: circleci/mysql:5.7.25
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: test_db
