@@ -42,6 +42,10 @@ jobs:
             ls -l ~
 
       - checkout
+      - run:
+          name: Install MySQL CLI; Import dummy data; run an example query
+          command: |
+            sudo apt-get install default-mysql-client
       # - run:
       # Our primary container isn't MYSQL so run a sleep command until it's ready.
           # name: Waiting for MySQL to be ready
