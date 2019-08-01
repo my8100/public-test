@@ -1,0 +1,12 @@
+pip>=19.1.1
+flake8
+coverage
+pytest
+# pytest-cov
+coveralls
+
+scrapy
+scrapyd
+
+pymysql>=0.9.3
+psycopg2>=2.7.7
