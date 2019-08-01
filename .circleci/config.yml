@@ -21,6 +21,9 @@ jobs:
       use-mysql:
         type: boolean
         default: false
+      use-postgresql:
+        type: boolean
+        default: false
     steps:
       - run:
           name: Install telnet
@@ -41,10 +44,21 @@ jobs:
                 name: Create virtual env in PY2
                 command: |
                   virtualenv ./venv
+
+      - unless:
+          condition: <<parameters.is-py27>>
+          steps:
+            - run:
+                name: Create virtual env in PY3
+                command: |
+                  python3 -m venv venv
+
       - when:
           condition: <<parameters.use-mysql>>
           steps:
             - run:
+                # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
+                # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
                 name: Waiting for MySQL to be ready
                 command: |
                   for i in `seq 1 10`;
@@ -55,13 +69,9 @@ jobs:
                   done
                   echo Failed waiting for MySQL && exit 1
 
-      - unless:
-          condition: <<parameters.is-py27>>
+      - when:
+          condition: <<parameters.use-postgresql>>
           steps:
-            - run:
-                name: Create virtual env in PY3
-                command: |
-                  python3 -m venv venv
 
       - run:
           name: Install dependencies
@@ -125,9 +135,9 @@ jobs:
       - image: circleci/python:2.7
       # https://circleci.com/docs/2.0/postgres-config/#example-mysql-project
       # Plugin caching_sha2_password could not be loaded
-      - image: circleci/mysql:8.0.4
+      # - image: circleci/mysql:8.0.4
       # https://circleci.com/docs/2.0/circleci-images/#mysql
-      # - image: circleci/mysql:5.7.25
+      - image: circleci/mysql:5.7.25
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: test_db
@@ -135,6 +145,7 @@ jobs:
           MYSQL_PASSWORD: passw0rd
     environment:
       SCRAPYDWEB_TESTMODE: True
+      ENABLE_MYSQL: True
       # MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
@@ -148,19 +159,33 @@ jobs:
     # docker:
       # - image: circleci/python:3.6
 
-  # py37-git:
-    # <<: *test-template
-    # docker:
-      # - image: circleci/python:3.7
+  py37-git:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.7
+      # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
+      - image: circleci/postgres:9.6-alpine
+        environment:
+          POSTGRES_USER: circleci-demo-go
+          POSTGRES_DB: circle_test
+
+          POSTGRES_ROOT_PASSWORD: rootpw
+          POSTGRES_PASSWORD: passw0rd
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      ENABLE_MYSQL: False
+      ENABLE_POSTGRESQL: True
+      POSTGRESQL_URI: 'postgres://root:rootpw@127.0.0.1:5432'
 
 workflows:
   test:
     jobs:
-      - py27:
-          is-py27: true
-          use-mysql: true
+      # - py27:
+          # is-py27: true
+          # use-mysql: true
       # - py35
       # - py36
-      - py37
-      # - py37-git:
-          # use-git: true
+      # - py37
+      - py37-git:
+          use-git: true
+          use-postgresql: true
