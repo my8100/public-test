@@ -139,8 +139,9 @@ def setup_postgresql(username, password, host, port):
     except (ImportError, AssertionError):
         sys.exit("Run command: %s" % install_command)
     print(username, password, host, port)
-    conn = psycopg2.connect(host=host, port=int(port), user=username, password=password)
+    # conn = psycopg2.connect(host=host, port=int(port), user=username, password=password)
     # conn = psycopg2.connect(host=host, port=int(port), user=username, password=None)
+    conn = psycopg2.connect(host=host, port=int(port), user=username, password=password, dbname='scrapydweb_apscheduler')
     conn.set_isolation_level(0)  # https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
     cur = conn.cursor()
     print(cur)
