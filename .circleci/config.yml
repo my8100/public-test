@@ -76,8 +76,9 @@ jobs:
                 name: Setup PSQL Databases
                 command: |
                   sudo apt install -y postgresql-client
-                  createdb -h localhost scrapydweb_apscheduler -O user
-                  createdb -h localhost scrapydweb_timertasks -O user
+                  # createdb: could not connect to database template1: FATAL:  role "circleci" does not exist
+                  createdb -h localhost scrapydweb_apscheduler -O circleci
+                  createdb -h localhost scrapydweb_timertasks -O circleci
 
       - run:
           name: Install dependencies
@@ -172,7 +173,7 @@ jobs:
       # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
       - image: circleci/postgres:9.6-alpine
         environment:
-          POSTGRES_USER: user
+          POSTGRES_USER: circleci
           POSTGRES_DB: circle_test
 
           # POSTGRES_ROOT_PASSWORD: rootpw
@@ -181,7 +182,7 @@ jobs:
       SCRAPYDWEB_TESTMODE: True
       ENABLE_MYSQL: False
       ENABLE_POSTGRESQL: True
-      POSTGRESQL_URI: 'postgres://circleci-demo-go:passw0rd@127.0.0.1:5432'
+      POSTGRESQL_URI: 'postgres://circleci:passw0rd@127.0.0.1:5432'
 
 workflows:
   test:
