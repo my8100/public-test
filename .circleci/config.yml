@@ -57,7 +57,7 @@ jobs:
 
       - unless:
           condition: <<parameters.is-py27>>
-          steps:
+          steps: 
             - run:
                 name: Create virtual env in PY3
                 command: |
