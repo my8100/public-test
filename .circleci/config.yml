@@ -74,7 +74,7 @@ jobs:
             # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
             # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
             # mysql -h 127.0.0.1 -u user -ppassw0rd -e "create database scrapydweb_timertasks"
-            mysql -h 127.0.0.1 -u root -e "create database scrapydweb_timertasks"
+            mysql -h 127.0.0.1 -u user -ppassw0rd -e "create database scrapydweb_timertasks"
 
       - when:
           condition: <<parameters.is-py27>>
