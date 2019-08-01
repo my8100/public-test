@@ -57,7 +57,7 @@ jobs:
 
       - unless:
           condition: <<parameters.is-py27>>
-          steps: 
+          steps:
             - run:
                 name: Create virtual env in PY3
                 command: |
@@ -135,6 +135,7 @@ jobs:
           MYSQL_PASSWORD: passw0rd
     environment:
       SCRAPYDWEB_TESTMODE: True
+      ENABLE_MYSQL: True
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
   # py35:
