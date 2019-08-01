@@ -8,6 +8,11 @@ jobs:
   py37: &test-template
     docker:
       - image: circleci/python:3.7
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      ENABLE_MYSQL: False
+      ENABLE_POSTGRESQL: False
+      ENABLE_SQLITE: False
 
     working_directory: ~/repo
 
@@ -153,10 +158,7 @@ jobs:
     docker:
       - image: circleci/python:2.7
     environment:
-      SCRAPYDWEB_TESTMODE: True
-      ENABLE_MYSQL: False
-      ENABLE_POSTGRESQL: False
-      ENABLE_SQLITE: False
+      ENABLE_SQLITE: True
       SQLITE_URI: 'sqlite:////home/circleci/repo/scrapydweb_database'
 
   # py35:
@@ -177,8 +179,6 @@ jobs:
           POSTGRES_DB: circleci
           POSTGRES_PASSWORD: passw0rd
     environment:
-      SCRAPYDWEB_TESTMODE: True
-      ENABLE_MYSQL: False
       ENABLE_POSTGRESQL: True
       POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
       # POSTGRESQL_URI: 'postgres://circleci@127.0.0.1:5432'
@@ -198,7 +198,6 @@ jobs:
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
     environment:
-      SCRAPYDWEB_TESTMODE: True
       ENABLE_MYSQL: True
       # MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
