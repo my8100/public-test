@@ -1,8 +1,10 @@
 # Python CircleCI 2.1 configuration file
 version: 2.1
 
+
 orbs:
   codecov: codecov/codecov@1.0.2
+
 
 jobs:
   py37: &test-template
@@ -158,6 +160,7 @@ jobs:
     docker:
       - image: circleci/python:2.7
     environment:
+      SCRAPYDWEB_TESTMODE: True
       ENABLE_SQLITE: True
       SQLITE_URI: 'sqlite:////home/circleci/repo/scrapydweb_database'
 
@@ -179,6 +182,7 @@ jobs:
           POSTGRES_DB: circleci
           POSTGRES_PASSWORD: passw0rd
     environment:
+      SCRAPYDWEB_TESTMODE: True
       ENABLE_POSTGRESQL: True
       POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
       # POSTGRESQL_URI: 'postgres://circleci@127.0.0.1:5432'
@@ -198,6 +202,7 @@ jobs:
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
     environment:
+      SCRAPYDWEB_TESTMODE: True
       ENABLE_MYSQL: True
       # MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
       MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
@@ -214,5 +219,5 @@ workflows:
           use-postgresql: true
       - py37
       - py37-git:
-          use-git: true 
+          use-git: true
           use-mysql: true
