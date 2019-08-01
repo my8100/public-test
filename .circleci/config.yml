@@ -48,7 +48,6 @@ jobs:
           # command: |
             # sudo apt-get install default-mysql-client
       - run:
-      Our primary container isn't MYSQL so run a sleep command until it's ready.
           name: Waiting for MySQL to be ready
           command: |
             for i in `seq 1 10`;
