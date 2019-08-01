@@ -13,10 +13,7 @@ jobs:
       - image: circleci/mysql:5.7-ram
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: scrapydweb_apscheduler
-          # MYSQL_DATABASE: scrapydweb_timertasks
-          # MYSQL_DATABASE: scrapydweb_metadata
-          # MYSQL_DATABASE: scrapydweb_jobs
+          MYSQL_DATABASE: test_db
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
 
@@ -24,7 +21,7 @@ jobs:
 
     environment:
       SCRAPYDWEB_TESTMODE: True
-      MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
+      MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
     parameters:
       is-py27:
@@ -73,8 +70,11 @@ jobs:
             # sudo apt install mysql-client || sudo apt-get update && sudo apt install mysql-client
             # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
             # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
-            # mysql -h 127.0.0.1 -u user -ppassw0rd -e "create database scrapydweb_timertasks"
+            # https://discuss.circleci.com/t/how-can-i-create-multiple-mysql-databases-in-the-same-docker-image/24762
+            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_apscheduler"
             mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_timertasks"
+            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
+            mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
 
       - when:
           condition: <<parameters.is-py27>>
