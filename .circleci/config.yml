@@ -34,10 +34,10 @@ jobs:
         type: boolean
         default: false
 
-    database:
-      override:
-        - mysql -u ubuntu -e "create database scrapydweb_apscheduler"
-        - mysql -u ubuntu -e "create database scrapydweb_timertasks"
+    # database:
+      # override:
+        # - mysql -u ubuntu -e "create database scrapydweb_apscheduler"
+        # - mysql -u ubuntu -e "create database scrapydweb_timertasks"
 
     steps:
       - run:
@@ -73,6 +73,7 @@ jobs:
             # sudo apt install mysql-client || sudo apt-get update && sudo apt install mysql-client
             # mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
             # mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
+            mysql -h 127.0.0.1 -u user -ppassw0rd -e "create database scrapydweb_timertasks"
 
       - when:
           condition: <<parameters.is-py27>>
