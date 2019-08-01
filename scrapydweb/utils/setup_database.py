@@ -106,7 +106,7 @@ def setup_mysql(username, password, host, port):
         pymysql.install_as_MySQLdb()
     print(username, password, host, port)
     conn = pymysql.connect(host=host, port=int(port), user=username, password=password,
-                           charset='utf8', cursorclass=pymysql.cursors.DictCursor)
+                           charset='utf8', cursorclass=pymysql.cursors.DictCursor, db='test_db')
     cur = conn.cursor()
     for dbname in DBS:
         if SCRAPYDWEB_TESTMODE:
