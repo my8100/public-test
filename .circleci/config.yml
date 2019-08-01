@@ -175,7 +175,7 @@ jobs:
       SCRAPYDWEB_TESTMODE: True
       ENABLE_MYSQL: False
       ENABLE_POSTGRESQL: True
-      POSTGRESQL_URI: 'postgres://root:rootpw@127.0.0.1:5432'
+      POSTGRESQL_URI: 'postgres://circleci-demo-go:passw0rd@127.0.0.1:5432'
 
 workflows:
   test:
