@@ -174,7 +174,7 @@ jobs:
       - image: circleci/postgres:9.6-alpine
         environment:
           POSTGRES_USER: circleci
-          POSTGRES_DB: circle_test
+          POSTGRES_DB: circleci
 
           # POSTGRES_ROOT_PASSWORD: rootpw
           POSTGRES_PASSWORD: passw0rd
