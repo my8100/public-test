@@ -106,8 +106,9 @@ def setup_mysql(username, password, host, port):
         pymysql.install_as_MySQLdb()
     print(username, password, host, port)
     conn = pymysql.connect(host=host, port=int(port), user=username, password=password,
-                           charset='utf8', cursorclass=pymysql.cursors.DictCursor, db='test_db')
+                           charset='utf8', cursorclass=pymysql.cursors.DictCursor)
     cur = conn.cursor()
+    print(cur)
     for dbname in DBS:
         if SCRAPYDWEB_TESTMODE:
             drop_database(cur, dbname)
