@@ -122,7 +122,8 @@ jobs:
           MYSQL_PASSWORD: passw0rd
     environment:
       SCRAPYDWEB_TESTMODE: True
-      MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
+      MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
+      # MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
   # py35:
     # <<: *test-template
