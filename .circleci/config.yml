@@ -214,5 +214,5 @@ workflows:
           use-postgresql: true
       - py37
       - py37-git:
-          use-git: true
+          use-git: true 
           use-mysql: true
