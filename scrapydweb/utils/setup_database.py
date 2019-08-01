@@ -138,10 +138,11 @@ def setup_postgresql(username, password, host, port):
         assert psycopg2.__version__ >= require_version, install_command
     except (ImportError, AssertionError):
         sys.exit("Run command: %s" % install_command)
-
+    print(username, password, host, port)
     conn = psycopg2.connect(host=host, port=int(port), user=username, password=password)
     conn.set_isolation_level(0)  # https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
     cur = conn.cursor()
+    print(cur)
     for dbname in DBS:
         if SCRAPYDWEB_TESTMODE:
             # database "scrapydweb_apscheduler" is being accessed by other users
