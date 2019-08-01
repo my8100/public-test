@@ -9,8 +9,8 @@ jobs:
   py37:
     docker:
       - image: circleci/python:3.7
-      # - image: circleci/mysql:8.0.4
-      - image: circleci/mysql:5.7-ram
+      - image: circleci/mysql:8.0.4
+      # - image: circleci/mysql:5.7-ram
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: test_db
@@ -30,11 +30,6 @@ jobs:
       use-git:
         type: boolean
         default: false
-
-    # database:
-      # override:
-        # - mysql -u ubuntu -e "create database scrapydweb_apscheduler"
-        # - mysql -u ubuntu -e "create database scrapydweb_timertasks"
 
     steps:
       - run:
