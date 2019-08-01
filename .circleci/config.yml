@@ -67,7 +67,7 @@ jobs:
                   mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
                   mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
 
-      - unless:
+      - unless: 
           condition: <<parameters.is-py27>>
           steps:
             - run:
