@@ -90,6 +90,7 @@ jobs:
                 command: |
                   # mysql://user:passw0rd@127.0.0.1:3306
                   printf "\nDATABASE_URL = 'mysql://root:rootpw@127.0.0.1:3306'\n" >> scrapydweb_settings_v8.py
+                  cat scrapydweb_settings_v8.py
       - when:
           condition: <<parameters.use-postgresql>>
           steps:
@@ -105,6 +106,7 @@ jobs:
                 command: |
                   # postgres://circleci@127.0.0.1:5432
                   printf "\nDATABASE_URL = 'postgres://circleci:fakepassword@127.0.0.1:5432'\n" >> scrapydweb_settings_v8.py
+                  cat scrapydweb_settings_v8.py
       - when:
           condition: <<parameters.use-sqlite>>
           steps:
@@ -112,6 +114,7 @@ jobs:
                 name: Set DATABASE_URL to sqlite
                 command: |
                   printf "\nDATABASE_URL = 'sqlite:////home/circleci/repo/scrapydweb_database'\n" >> scrapydweb_settings_v8.py
+                  cat scrapydweb_settings_v8.py
       - run:
           name: Install dependencies
           command: |
@@ -139,6 +142,7 @@ jobs:
           command: |
             cd ~
             printf "[scrapyd]\nusername = admin\npassword = 12345\n" > scrapyd.conf
+            cat scrapyd.conf
             nohup ~/repo/venv/bin/scrapyd > ~/scrapyd.log 2>&1 &
             sleep 5
             cat ~/scrapyd.log
@@ -147,6 +151,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            ls -l
             . venv/bin/activate
             flake8 . --count --exclude=./venv* --select=E9,F63,F7,F82 --show-source --statistics
             coverage erase

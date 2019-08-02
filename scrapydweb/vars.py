@@ -81,19 +81,24 @@ jobs_table_map = {}
 
 
 # For Timer Tasks
-custom_settings_module = importlib.import_module(os.path.splitext(SCRAPYDWEB_SETTINGS_PY)[0])
-custom_database_url = getattr(custom_settings_module, 'DATABASE_URL', '')
-custom_database_url = custom_database_url if isinstance(custom_database_url, str) else ''
-DATABASE_URL = custom_database_url or default_database_url or 'sqlite:///' + DATA_PATH
-APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS = setup_database(DATABASE_URL, DATABASE_PATH)
-
-
 # STATE_STOPPED = 0, STATE_RUNNING = 1, STATE_PAUSED = 2
 SCHEDULER_STATE_DICT = {
     STATE_STOPPED: 'STATE_STOPPED',
     STATE_RUNNING: 'STATE_RUNNING',
     STATE_PAUSED: 'STATE_PAUSED',
 }
+
+
+# For database
+try:
+    custom_settings_module = importlib.import_module(os.path.splitext(SCRAPYDWEB_SETTINGS_PY)[0])
+except ModuleNotFoundError:
+    custom_database_url = ''
+else:
+    custom_database_url = getattr(custom_settings_module, 'DATABASE_URL', '')
+    custom_database_url = custom_database_url if isinstance(custom_database_url, str) else ''
+DATABASE_URL = custom_database_url or default_database_url or 'sqlite:///' + DATA_PATH
+APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS = setup_database(DATABASE_URL, DATABASE_PATH)
 
 
 def setup_logfile(delete=False):
