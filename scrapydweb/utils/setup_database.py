@@ -16,6 +16,8 @@ SCRAPYDWEB_TESTMODE = os.environ.get('SCRAPYDWEB_TESTMODE', 'False').lower() == 
 def setup_database(database_url, default_database_path):
     database_url = re.sub(r'\\', '/', database_url)
     database_url = re.sub(r'/$', '', database_url)
+    database_path = re.sub(r'\\', '/', default_database_path)
+    database_path = re.sub(r'/$', '', default_database_path)
 
     m_mysql = re.match(r'mysql://(.+?)(?::(.+?))?@(.+?):(\d+)', database_url)
     m_postgres = re.match(r'postgres://(.+?)(?::(.+?))?@(.+?):(\d+)', database_url)
@@ -25,7 +27,8 @@ def setup_database(database_url, default_database_path):
     elif m_postgres:
         setup_postgresql(*m_postgres.groups())
     else:
-        database_path = os.path.abspath(m_sqlite.group(1)) if m_sqlite else default_database_path
+        database_path = m_sqlite.group(1) if m_sqlite else database_path
+        database_path = os.path.abspath(database_path)
         database_path = re.sub(r'\\', '/', database_path)
         database_path = re.sub(r'/$', '', database_path)
         if not os.path.exists(database_path):
@@ -51,7 +54,7 @@ def setup_database(database_url, default_database_path):
         print("APSCHEDULER_DATABASE_URI: %s" % APSCHEDULER_DATABASE_URI)
         print("SQLALCHEMY_DATABASE_URI: %s" % SQLALCHEMY_DATABASE_URI)
         print("SQLALCHEMY_BINDS: %s" % SQLALCHEMY_BINDS)
-    return APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS
+    return APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS, database_path
 
 
 def drop_database(cur, dbname):

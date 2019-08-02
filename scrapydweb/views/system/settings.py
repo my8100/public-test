@@ -6,7 +6,7 @@ from flask import render_template
 from logparser import SETTINGS_PY_PATH as LOGPARSER_SETTINGS_PY_PATH
 
 from ...common import json_dumps
-from ...vars import APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS, SCHEDULER_STATE_DICT
+from ...vars import SCHEDULER_STATE_DICT
 from ..baseview import BaseView
 
 
@@ -160,14 +160,12 @@ class SettingsView(BaseView):
         value = re.sub(r'(\s[1-9]\d*)', r"<b style='color: red'>\1</b>", value)
         self.kwargs['email_triggers'] = value
 
-        # database
-        self.kwargs['database_details'] = self.json_dumps(dict(
-            APSCHEDULER_DATABASE_URI=self.hide_account(APSCHEDULER_DATABASE_URI),
-            SQLALCHEMY_DATABASE_URI=self.hide_account(SQLALCHEMY_DATABASE_URI),
-            SQLALCHEMY_BINDS_METADATA=self.hide_account(SQLALCHEMY_BINDS['metadata']),
-            SQLALCHEMY_BINDS_JOBS=self.hide_account(SQLALCHEMY_BINDS['jobs'])
-        ))
-
         # System
         self.kwargs['DEBUG'] = self.DEBUG
         self.kwargs['VERBOSE'] = self.VERBOSE
+        self.kwargs['database_details'] = self.json_dumps(dict(
+            APSCHEDULER_DATABASE_URI=self.hide_account(self.APSCHEDULER_DATABASE_URI),
+            SQLALCHEMY_DATABASE_URI=self.hide_account(self.SQLALCHEMY_DATABASE_URI),
+            SQLALCHEMY_BINDS_METADATA=self.hide_account(self.SQLALCHEMY_BINDS['metadata']),
+            SQLALCHEMY_BINDS_JOBS=self.hide_account(self.SQLALCHEMY_BINDS['jobs'])
+        ))

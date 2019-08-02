@@ -89,7 +89,7 @@ jobs:
                 name: Set DATABASE_URL to mysql
                 command: |
                   # mysql://user:passw0rd@127.0.0.1:3306
-                  printf "\nDATABASE_URL = 'mysql://root:rootpw@127.0.0.1:3306'\n" >> scrapydweb_settings_v8.py
+                  printf "\nDATABASE_URL = '"$DATABASE_URL"'\n" >> scrapydweb_settings_v8.py
                   cat scrapydweb_settings_v8.py
       - when:
           condition: <<parameters.use-postgresql>>
@@ -105,7 +105,7 @@ jobs:
                 name: Set DATABASE_URL to postgresql
                 command: |
                   # postgres://circleci@127.0.0.1:5432
-                  printf "\nDATABASE_URL = 'postgres://circleci:fakepassword@127.0.0.1:5432'\n" >> scrapydweb_settings_v8.py
+                  printf "\nDATABASE_URL = '"$DATABASE_URL"'\n" >> scrapydweb_settings_v8.py
                   cat scrapydweb_settings_v8.py
       - when:
           condition: <<parameters.use-sqlite>>
@@ -113,7 +113,7 @@ jobs:
             - run:
                 name: Set DATABASE_URL to sqlite
                 command: |
-                  printf "\nDATABASE_URL = 'sqlite:////home/circleci/repo/scrapydweb_database'\n" >> scrapydweb_settings_v8.py
+                  printf "\nDATABASE_URL = '"$DATABASE_URL"'\n" >> scrapydweb_settings_v8.py
                   cat scrapydweb_settings_v8.py
       - run:
           name: Install dependencies
@@ -177,6 +177,9 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:2.7
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      DATABASE_URL: 'sqlite:////home/circleci/repo/scrapydweb_database'
 
   # py35:
     # <<: *test-template
@@ -195,6 +198,9 @@ jobs:
           # https://discuss.circleci.com/t/django-postgresql-and-circleci/15032
           POSTGRES_DB: circleci
           POSTGRES_PASSWORD: passw0rd
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      DATABASE_URL: 'postgres://circleci:fakepassword@localhost:5432'
 
   py37-git:
     <<: *test-template
@@ -210,6 +216,9 @@ jobs:
           MYSQL_DATABASE: test_db
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
+    environment:
+      SCRAPYDWEB_TESTMODE: True
+      DATABASE_URL: 'mysql://root:rootpw@127.0.0.1:3306'
 
 
 workflows:

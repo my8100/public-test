@@ -92,14 +92,14 @@ SCHEDULER_STATE_DICT = {
 # For database
 try:
     custom_settings_module = importlib.import_module(os.path.splitext(SCRAPYDWEB_SETTINGS_PY)[0])
-except ModuleNotFoundError:
+except ImportError:
     custom_database_url = ''
 else:
     custom_database_url = getattr(custom_settings_module, 'DATABASE_URL', '')
     custom_database_url = custom_database_url if isinstance(custom_database_url, str) else ''
 DATABASE_URL = custom_database_url or default_database_url or 'sqlite:///' + DATA_PATH
-APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS = setup_database(DATABASE_URL, DATABASE_PATH)
-
+results = setup_database(DATABASE_URL, DATABASE_PATH)
+APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS, DATABASE_PATH = results
 
 def setup_logfile(delete=False):
     if delete:
