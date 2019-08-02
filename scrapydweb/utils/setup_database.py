@@ -1,5 +1,4 @@
 # coding: utf-8
-import glob
 import os
 import re
 import sys
@@ -14,71 +13,45 @@ DBS = [DB_APSCHEDULER, DB_TIMERTASKS, DB_METADATA, DB_JOBS]
 SCRAPYDWEB_TESTMODE = os.environ.get('SCRAPYDWEB_TESTMODE', 'False').lower() == 'true'
 
 
-def setup_database(DATABASE_PATH):
-    DATABASE_PATH = re.sub(r'\\', '/', DATABASE_PATH)
-    DATABASE_PATH = re.sub(r'/$', '', DATABASE_PATH)
+def setup_database(database_url, default_database_path):
+    database_url = re.sub(r'\\', '/', database_url)
+    database_url = re.sub(r'/$', '', database_url)
 
-    mysql_uri = os.environ.get('MYSQL_URI', '')
-    postgresql_uri = os.environ.get('POSTGRESQL_URI', '')
-    sqlite_uri = os.environ.get('SQLITE_URI', '')
-
-    enable_mysql = os.environ.get('ENABLE_MYSQL', 'True').lower() == 'true'
-    enable_postgresql = os.environ.get('ENABLE_POSTGRESQL', 'True').lower() == 'true'
-    enable_sqlite = os.environ.get('ENABLE_SQLITE', 'True').lower() == 'true'
-
-    uri = ''
-    m_mysql = re.match(r'mysql://(.+?):(.+?)@(.+?):(\d+)', mysql_uri)
-    m_postgres = re.match(r'postgres://(.+?):(.+?)@(.+?):(\d+)', postgresql_uri)
-    m_postgres_no_password = re.match(r'postgres://(.+?)@(.+?):(\d+)', postgresql_uri)
-    m_sqlite = re.match(r'sqlite:///(.+)$', sqlite_uri)
-    if enable_mysql and m_mysql:
-        print('Found environment variable MYSQL_URI: %s' % mysql_uri)
-        uri = mysql_uri
+    m_mysql = re.match(r'mysql://(.+?)(?::(.+?))?@(.+?):(\d+)', database_url)
+    m_postgres = re.match(r'postgres://(.+?)(?::(.+?))?@(.+?):(\d+)', database_url)
+    m_sqlite = re.match(r'sqlite:///(.+)$', database_url)
+    if m_mysql:
         setup_mysql(*m_mysql.groups())
-    elif enable_postgresql and (m_postgres or m_postgres_no_password):
-        print('Found environment variable POSTGRESQL_URI: %s' % postgresql_uri)
-        uri = postgresql_uri
-        if m_postgres:
-            setup_postgresql(*m_postgres.groups())
-        else:
-            username, host, port = m_postgres_no_password.groups()
-            setup_postgresql(username, None, host, port)
-    elif enable_sqlite and m_sqlite:
-        print('Found environment variable SQLITE_URI: %s' % sqlite_uri)
-        folder_path = re.sub(r'\\', '/', os.path.abspath(m_sqlite.group(1)))
-        if not os.path.exists(folder_path):
-            os.mkdir(folder_path)
-        uri = 'sqlite:///%s' % folder_path
-        DATABASE_PATH = folder_path
-        if SCRAPYDWEB_TESTMODE:
-            for file in glob.glob(os.path.join(DATABASE_PATH, '*.db')):
-                os.remove(file)
-                print("Removed %s" % file)
-    if uri:
-        uri = re.sub(r'\\', '/', uri)
-        uri = re.sub(r'/$', '', uri)
-        is_sqlite = uri.startswith('sqlite:///')
-        APSCHEDULER_DATABASE_URI = '/'.join([uri, DB_APSCHEDULER+'.db' if is_sqlite else DB_APSCHEDULER])
-        SQLALCHEMY_DATABASE_URI = '/'.join([uri, DB_TIMERTASKS+'.db' if is_sqlite else DB_TIMERTASKS])
+    elif m_postgres:
+        setup_postgresql(*m_postgres.groups())
+    else:
+        database_path = os.path.abspath(m_sqlite.group(1)) if m_sqlite else default_database_path
+        database_path = re.sub(r'\\', '/', database_path)
+        database_path = re.sub(r'/$', '', database_path)
+        if not os.path.exists(database_path):
+            os.mkdir(database_path)
+
+    if m_mysql or m_postgres:
+        APSCHEDULER_DATABASE_URI = '/'.join([database_url, DB_APSCHEDULER])
+        SQLALCHEMY_DATABASE_URI = '/'.join([database_url, DB_TIMERTASKS])
         SQLALCHEMY_BINDS = {
-            'metadata': '/'.join([uri, DB_METADATA+'.db' if is_sqlite else DB_METADATA]),
-            'jobs': '/'.join([uri, DB_JOBS+'.db' if is_sqlite else DB_JOBS])
+            'metadata': '/'.join([database_url, DB_METADATA]),
+            'jobs': '/'.join([database_url, DB_JOBS])
         }
     else:
-        APSCHEDULER_DATABASE_URI = 'sqlite:///' + '/'.join([DATABASE_PATH, 'apscheduler.db'])
+        APSCHEDULER_DATABASE_URI = 'sqlite:///' + '/'.join([database_path, 'apscheduler.db'])
         # http://flask-sqlalchemy.pocoo.org/2.3/binds/#binds
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + '/'.join([DATABASE_PATH, 'timer_tasks.db'])
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + '/'.join([database_path, 'timer_tasks.db'])
         SQLALCHEMY_BINDS = {
-            'metadata': 'sqlite:///' + '/'.join([DATABASE_PATH, 'metadata.db']),
-            'jobs': 'sqlite:///' + '/'.join([DATABASE_PATH, 'jobs.db'])
+            'metadata': 'sqlite:///' + '/'.join([database_path, 'metadata.db']),
+            'jobs': 'sqlite:///' + '/'.join([database_path, 'jobs.db'])
         }
 
     if SCRAPYDWEB_TESTMODE:
-        print("DATABASE_PATH: %s" % DATABASE_PATH)
         print("APSCHEDULER_DATABASE_URI: %s" % APSCHEDULER_DATABASE_URI)
         print("SQLALCHEMY_DATABASE_URI: %s" % SQLALCHEMY_DATABASE_URI)
         print("SQLALCHEMY_BINDS: %s" % SQLALCHEMY_BINDS)
-    return DATABASE_PATH, APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS
+    return APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS
 
 
 def drop_database(cur, dbname):
@@ -109,11 +82,10 @@ def setup_mysql(username, password, host, port):
     else:
         # Run scrapydweb: ModuleNotFoundError: No module named 'MySQLdb'
         pymysql.install_as_MySQLdb()
-    print(username, password, host, port)
+
     conn = pymysql.connect(host=host, port=int(port), user=username, password=password,
                            charset='utf8', cursorclass=pymysql.cursors.DictCursor)
     cur = conn.cursor()
-    print(cur)
     for dbname in DBS:
         if SCRAPYDWEB_TESTMODE:
             drop_database(cur, dbname)
@@ -143,14 +115,10 @@ def setup_postgresql(username, password, host, port):
         assert psycopg2.__version__ >= require_version, install_command
     except (ImportError, AssertionError):
         sys.exit("Run command: %s" % install_command)
-    print(username, password, host, port)
+
     conn = psycopg2.connect(host=host, port=int(port), user=username, password=password)
-    # conn = psycopg2.connect(host=host, port=int(port), user=username, password=None)
-    # conn = psycopg2.connect(host=host, port=int(port), user=username, password=password, dbname='scrapydweb_apscheduler')
-    # conn = psycopg2.connect(host=host, port=int(port), user=username, password=password, dbname=None)
     conn.set_isolation_level(0)  # https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
     cur = conn.cursor()
-    print(cur)
     for dbname in DBS:
         if SCRAPYDWEB_TESTMODE:
             # database "scrapydweb_apscheduler" is being accessed by other users

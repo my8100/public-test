@@ -12,9 +12,6 @@ jobs:
       - image: circleci/python:3.7
     environment:
       SCRAPYDWEB_TESTMODE: True
-      ENABLE_MYSQL: False
-      ENABLE_POSTGRESQL: False
-      ENABLE_SQLITE: False
 
     working_directory: ~/repo
 
@@ -88,6 +85,11 @@ jobs:
                   # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_timertasks"
                   # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_metadata"
                   # mysql -h 127.0.0.1 -u root -prootpw -e "create database scrapydweb_jobs"
+            - run:
+                name: Set DATABASE_URL to mysql
+                command: |
+                  # mysql://user:passw0rd@127.0.0.1:3306
+                  printf "\nDATABASE_URL = 'mysql://root:rootpw@127.0.0.1:3306'\n" >> scrapydweb_settings_v8.py
       - when:
           condition: <<parameters.use-postgresql>>
           steps:
@@ -98,7 +100,18 @@ jobs:
                   # createdb: could not connect to database template1: FATAL:  role "circleci" does not exist
                   # sudo apt install -y postgresql-client
                   # createdb -h localhost scrapydweb_apscheduler -O circleci
-
+            - run:
+                name: Set DATABASE_URL to postgresql
+                command: |
+                  # postgres://circleci@127.0.0.1:5432
+                  printf "\nDATABASE_URL = 'postgres://circleci:fakepassword@127.0.0.1:5432'\n" >> scrapydweb_settings_v8.py
+      - when:
+          condition: <<parameters.use-sqlite>>
+          steps:
+            - run:
+                name: Set DATABASE_URL to sqlite
+                command: |
+                  printf "\nDATABASE_URL = 'sqlite:////home/circleci/repo/scrapydweb_database'\n" >> scrapydweb_settings_v8.py
       - run:
           name: Install dependencies
           command: |
@@ -159,10 +172,6 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:2.7
-    environment:
-      SCRAPYDWEB_TESTMODE: True
-      ENABLE_SQLITE: True
-      SQLITE_URI: 'sqlite:////home/circleci/repo/scrapydweb_database'
 
   # py35:
     # <<: *test-template
@@ -181,11 +190,6 @@ jobs:
           # https://discuss.circleci.com/t/django-postgresql-and-circleci/15032
           POSTGRES_DB: circleci
           POSTGRES_PASSWORD: passw0rd
-    environment:
-      SCRAPYDWEB_TESTMODE: True
-      ENABLE_POSTGRESQL: True
-      POSTGRESQL_URI: 'postgres://circleci:fakepassword@127.0.0.1:5432'
-      # POSTGRESQL_URI: 'postgres://circleci@127.0.0.1:5432'
 
   py37-git:
     <<: *test-template
@@ -201,11 +205,6 @@ jobs:
           MYSQL_DATABASE: test_db
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
-    environment:
-      SCRAPYDWEB_TESTMODE: True
-      ENABLE_MYSQL: True
-      # MYSQL_URI: 'mysql://user:passw0rd@127.0.0.1:3306'
-      MYSQL_URI: 'mysql://root:rootpw@127.0.0.1:3306'
 
 
 workflows:

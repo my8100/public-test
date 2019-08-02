@@ -34,7 +34,7 @@ def find_scrapydweb_settings_py(filename, path, prevpath=None):
     cfgfile = os.path.join(path, filename)
     if os.path.exists(cfgfile):
         return cfgfile
-    return find_scrapydweb_settings_py(filename, os.path.dirname(path), path)
+    # return find_scrapydweb_settings_py(filename, os.path.dirname(path), path)
 
 
 def get_now_string(allow_space=False):

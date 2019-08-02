@@ -308,3 +308,6 @@ DEBUG = False
 # The default is False, set it to True to change the logging level from WARNING to DEBUG
 # for getting more information about how ScrapydWeb works, especially while debugging.
 VERBOSE = False
+
+# xx
+DATABASE_URL = ''

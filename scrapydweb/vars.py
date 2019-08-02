@@ -1,5 +1,6 @@
 # coding: utf-8
 import glob
+import importlib
 import io
 import os
 import re
@@ -7,7 +8,11 @@ import sys
 
 from apscheduler.schedulers.base import STATE_PAUSED, STATE_RUNNING, STATE_STOPPED
 
+from .default_settings import DATABASE_URL as default_database_url
 from .utils.setup_database import setup_database
+
+
+SCRAPYDWEB_SETTINGS_PY = 'scrapydweb_settings_v8.py'
 
 PYTHON_VERSION = '.'.join([str(n) for n in sys.version_info[:3]])
 PY2 = sys.version_info.major < 3
@@ -76,7 +81,11 @@ jobs_table_map = {}
 
 
 # For Timer Tasks
-DATABASE_PATH, APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS = setup_database(DATABASE_PATH)
+custom_settings_module = importlib.import_module(os.path.splitext(SCRAPYDWEB_SETTINGS_PY)[0])
+custom_database_url = getattr(custom_settings_module, 'DATABASE_URL', '')
+custom_database_url = custom_database_url if isinstance(custom_database_url, str) else ''
+DATABASE_URL = custom_database_url or default_database_url or 'sqlite:///' + DATA_PATH
+APSCHEDULER_DATABASE_URI, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_BINDS = setup_database(DATABASE_URL, DATABASE_PATH)
 
 
 # STATE_STOPPED = 0, STATE_RUNNING = 1, STATE_PAUSED = 2
