@@ -7,6 +7,7 @@ import re
 from ..common import handle_metadata, handle_slash, json_dumps, session
 from ..models import create_jobs_table, db
 from ..utils.scheduler import scheduler
+from ..utils.setup_database import test_database_url_pattern
 from ..vars import (ALLOWED_SCRAPYD_LOG_EXTENSIONS, EMAIL_TRIGGER_KEYS,
                     SCHEDULER_STATE_DICT, STATE_PAUSED, STATE_RUNNING,
                     SCHEDULE_ADDITIONAL, STRICT_NAME_PATTERN, UA_DICT,
@@ -249,6 +250,10 @@ def check_app_config(config):
         # logging.getLogger('apscheduler').setLevel(logging.DEBUG)
     # else:
         # logging.getLogger('apscheduler').setLevel(logging.WARNING)
+    check_assert('DATABASE_URL', '', str)
+    database_url = config.get('DATABASE_URL', '')
+    if database_url:
+        assert any(test_database_url_pattern(database_url)), "Invalid format of DATABASE_URL: %s" % database_url
 
     # Apscheduler
     # In __init__.py create_app(): scheduler.start(paused=True)

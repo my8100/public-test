@@ -10,7 +10,18 @@ DB_METADATA = 'scrapydweb_metadata'
 DB_JOBS = 'scrapydweb_jobs'
 DBS = [DB_APSCHEDULER, DB_TIMERTASKS, DB_METADATA, DB_JOBS]
 
+PATTERN_MYSQL = re.compile(r'mysql://(.+?)(?::(.+?))?@(.+?):(\d+)')
+PATTERN_POSTGRESQL = re.compile(r'postgres://(.+?)(?::(.+?))?@(.+?):(\d+)')
+PATTERN_SQLITE = re.compile(r'sqlite:///(.+)$')
+
 SCRAPYDWEB_TESTMODE = os.environ.get('SCRAPYDWEB_TESTMODE', 'False').lower() == 'true'
+
+
+def test_database_url_pattern(database_url):
+    m_mysql = PATTERN_MYSQL.match(database_url)
+    m_postgres = PATTERN_POSTGRESQL.match(database_url)
+    m_sqlite = PATTERN_SQLITE.match(database_url)
+    return m_mysql, m_postgres, m_sqlite
 
 
 def setup_database(database_url, default_database_path):
@@ -19,9 +30,7 @@ def setup_database(database_url, default_database_path):
     database_path = re.sub(r'\\', '/', default_database_path)
     database_path = re.sub(r'/$', '', default_database_path)
 
-    m_mysql = re.match(r'mysql://(.+?)(?::(.+?))?@(.+?):(\d+)', database_url)
-    m_postgres = re.match(r'postgres://(.+?)(?::(.+?))?@(.+?):(\d+)', database_url)
-    m_sqlite = re.match(r'sqlite:///(.+)$', database_url)
+    m_mysql, m_postgres, m_sqlite = test_database_url_pattern(database_url)
     if m_mysql:
         setup_mysql(*m_mysql.groups())
     elif m_postgres:
