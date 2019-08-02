@@ -24,11 +24,11 @@ def test_database_url_pattern(database_url):
     return m_mysql, m_postgres, m_sqlite
 
 
-def setup_database(database_url, default_database_path):
+def setup_database(database_url, database_path):
     database_url = re.sub(r'\\', '/', database_url)
     database_url = re.sub(r'/$', '', database_url)
-    database_path = re.sub(r'\\', '/', default_database_path)
-    database_path = re.sub(r'/$', '', default_database_path)
+    database_path = re.sub(r'\\', '/', database_path)
+    database_path = re.sub(r'/$', '', database_path)
 
     m_mysql, m_postgres, m_sqlite = test_database_url_pattern(database_url)
     if m_mysql:
@@ -60,6 +60,7 @@ def setup_database(database_url, default_database_path):
         }
 
     if SCRAPYDWEB_TESTMODE:
+        print("DATABASE_PATH: %s" % database_path)
         print("APSCHEDULER_DATABASE_URI: %s" % APSCHEDULER_DATABASE_URI)
         print("SQLALCHEMY_DATABASE_URI: %s" % SQLALCHEMY_DATABASE_URI)
         print("SQLALCHEMY_BINDS: %s" % SQLALCHEMY_BINDS)
@@ -85,9 +86,9 @@ def setup_mysql(username, password, host, port):
     pip install "path to the downloaded mysqlclient.whl file"
     """
     require_version = '0.9.3'  # Dec 18, 2018
-    install_command = "pip install --upgrade pymysql>=%s" % require_version
+    install_command = "pip install --upgrade pymysql"
     try:
-        import pymysql  # 0.9.3 Dec 18, 2018
+        import pymysql
         assert pymysql.__version__ >= require_version, install_command
     except (ImportError, AssertionError):
         sys.exit("Run command: %s" % install_command)
@@ -121,7 +122,7 @@ def setup_postgresql(username, password, host, port):
     you have to create the database in the database server before running upgrade.
     """
     require_version = '2.7.7'  # Jan 23, 2019
-    install_command = "pip install --upgrade psycopg2>=%s" % require_version
+    install_command = "pip install --upgrade psycopg2"
     try:
         import psycopg2
         assert psycopg2.__version__ >= require_version, install_command

@@ -204,6 +204,7 @@ class BaseView(View):
             self.FEATURES += 'T'
         else:
             self.FEATURES += 't'
+        self.FEATURES += self.SQLALCHEMY_DATABASE_URI[:3]
 
         self.template_fail = 'scrapydweb/fail_mobileui.html' if self.USE_MOBILEUI else 'scrapydweb/fail.html'
         self.update_g()

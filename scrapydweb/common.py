@@ -34,6 +34,7 @@ def find_scrapydweb_settings_py(filename, path, prevpath=None):
     cfgfile = os.path.join(path, filename)
     if os.path.exists(cfgfile):
         return cfgfile
+    # In vars.py, try to import module scrapydweb_settings_vN in cwd only
     # return find_scrapydweb_settings_py(filename, os.path.dirname(path), path)
 
 
