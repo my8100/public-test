@@ -177,7 +177,9 @@ jobs:
             coverage html
             coverage xml
             ls -la
-            tree ~
+            ls -l /home/circleci/repo/scrapydweb/data
+            ls -l $DATA_PATH
+            ls -l $DATABASE_URL
             coveralls
       - store_artifacts:
           path: htmlcov
