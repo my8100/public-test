@@ -36,9 +36,9 @@ jobs:
         default: false
     steps:
       - run:
-          name: Install telnet
+          name: Install telnet, tree
           command: |
-            sudo apt-get update && sudo apt-get install telnet
+            sudo apt-get update && sudo apt-get install telnet, tree
 
       - run:
           name: Setup env
@@ -177,7 +177,7 @@ jobs:
             coverage html
             coverage xml
             ls -la
-            tree scrapydweb
+            tree ~
             coveralls
       - store_artifacts:
           path: htmlcov
