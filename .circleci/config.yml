@@ -36,9 +36,9 @@ jobs:
         default: false
     steps:
       - run:
-          name: Install telnet, tree
+          name: Install telnet
           command: |
-            sudo apt-get update && sudo apt-get install telnet tree
+            sudo apt-get update && sudo apt-get install telnet
 
       - run:
           name: Setup env
@@ -163,7 +163,7 @@ jobs:
             . venv/bin/activate
             flake8 . --count --exclude=./venv* --select=E9,F63,F7,F82 --show-source --statistics
             coverage erase
-            coverage run --source=scrapydweb -m pytest tests/test_system.py -s -vv -l --disable-warnings -x
+            coverage run --source=scrapydweb -m pytest tests -s -vv -l --disable-warnings -x
 
       - run:
           name: Generate report
@@ -177,9 +177,6 @@ jobs:
             coverage html
             coverage xml
             ls -la
-            ls -l /home/circleci/repo/scrapydweb/data
-            ls -l $DATA_PATH
-            ls -l $DATABASE_URL
             coveralls
       - store_artifacts:
           path: htmlcov
