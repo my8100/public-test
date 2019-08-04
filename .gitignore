@@ -1,31 +1,5 @@
-/*.html
-scrapydweb_settings.py
-scrapydweb_settings_v*.py
-
-
-tests/*.html
-tests/data/
-
-
-scrapydweb/data/*
-!scrapydweb/data/parse/
-!scrapydweb/data/demo_projects/
-
-scrapydweb/data/parse/*
-!scrapydweb/data/parse/ScrapydWeb_demo.log
-
-scrapydweb/data/demo_projects/*
-!scrapydweb/data/demo_projects/ScrapydWeb_demo/
-!scrapydweb/data/demo_projects/ScrapydWeb_demo - 副本/
-
-scrapydweb/data/demo_projects/ScrapydWeb_demo/*
-!scrapydweb/data/demo_projects/ScrapydWeb_demo/ScrapydWeb_demo/
-!scrapydweb/data/demo_projects/ScrapydWeb_demo/scrapy.cfg
-
-scrapydweb/data/demo_projects/ScrapydWeb_demo - 副本/*
-!scrapydweb/data/demo_projects/ScrapydWeb_demo - 副本/ScrapydWeb_demo/
-!scrapydweb/data/demo_projects/ScrapydWeb_demo - 副本/scrapy.cfg
-
+tests/logs/
+tests/demo_project/
 
 venv/
 
