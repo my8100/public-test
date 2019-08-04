@@ -1,5 +1,6 @@
 # coding: utf-8
 import os
+import platform
 import re
 import time
 
@@ -9,7 +10,8 @@ from tests.utils import cst
 
 def test_telnet(psr):
     parser = psr(execute_main=False)
-
+    # Linux-5.0.9-301.fc30.x86_64-x86_64-with-fedora-30-Thirty'
+    on_fedora = 'fedora' in platform.platform()
     cwd = os.getcwd()
     os.chdir(cst.DEMO_PROJECT_PATH)
     try:
@@ -64,7 +66,7 @@ def test_telnet(psr):
                 assert log_data['finish_reason'] == 'closespider_timeout'
                 assert log_data['crawler_stats']
                 assert log_data['crawler_stats']['source'] == 'log'
-                if version == '1.5.0' or (cst.ON_WINDOWS and version > '1.5.1'):
+                if version == '1.5.0' or ((cst.ON_WINDOWS or on_fedora) and version > '1.5.1'):
                     assert not log_data['crawler_engine']
                 else:
                     assert log_data['crawler_engine']

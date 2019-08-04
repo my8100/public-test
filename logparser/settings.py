@@ -36,7 +36,7 @@ SCRAPYD_SERVER = '127.0.0.1:6800'
 
 # Whether to collect Crawler.stats and Crawler.engine via telnet, the default is True.
 # Check out https://doc.scrapy.org/en/latest/topics/telnetconsole.html for more info.
-# Note that this feature only works for Scrapy<=1.5.1 if you are running Scrapyd on Windows.
+# Note that this feature only works for Scrapy<=1.5.1 if you are running Scrapyd on Windows or Fedora.
 ENABLE_TELNET = True
 
 # The default is '', set up this option only when you are using docker-compose.

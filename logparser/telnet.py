@@ -2,6 +2,7 @@
 import io
 import logging
 import os
+import platform
 import re
 import sys
 from telnetlib import DO, DONT, IAC, SB, SE, Telnet, TTYPE, WILL, WONT
@@ -29,6 +30,7 @@ TELNETCONSOLE_COMMAND_MAP = dict(
 # noinspection PyBroadException
 class MyTelnet(Common):
     logger = logger
+    on_fedora = 'fedora' in platform.platform()
 
     def __init__(self, data, override_telnet_console_host, verbose):
         self.data = data
@@ -75,7 +77,7 @@ class MyTelnet(Common):
     # https://stackoverflow.com/questions/18547412/python-telnetlib-to-connect-to-scrapy-telnet-to-read-stats
     def run(self):
         self.logger.debug("scrapy_version: %s", self.scrapy_version)
-        if self.ON_WINDOWS and self.scrapy_version > SUPPORTED_SCRAPY_VERSION:
+        if (self.ON_WINDOWS or self.on_fedora) and self.scrapy_version > SUPPORTED_SCRAPY_VERSION:
             self.logger.error("Telnet only supports scrapy<=%s on Windows, current scrapy_version: %s",
                               SUPPORTED_SCRAPY_VERSION, self.scrapy_version)
             return
