@@ -1,0 +1,1198 @@
+{
+    "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo_txt\\test_txt\\2019-01-01T00_00_02.txt": {
+        "status": "ok", 
+        "log_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo_txt\\test_txt\\2019-01-01T00_00_02.txt", 
+        "_head": 50, 
+        "json_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo_txt\\test_txt\\2019-01-01T00_00_02.json", 
+        "json_url": "http://127.0.0.1:6800/logs/demo_txt/test_txt/2019-01-01T00_00_02.json", 
+        "position": 15862, 
+        "size": 15862, 
+        "head": "2018-10-23 18:28:34 [scrapy.utils.log] INFO: Scrapy 1.5.1 started (bot: demo)\n2018-10-23 18:28:34 [scrapy.utils.log] INFO: Versions: lxml 4.2.1.0, libxml2 2.9.7, cssselect 1.0.3, parsel 1.4.0, w3lib 1.19.0, Twisted 17.5.0, Python 3.6.5 |Anaconda, Inc.| (default, Mar 29 2018, 13:32:41) [MSC v.1900 64 bit (AMD64)], pyOpenSSL 17.5.0 (OpenSSL 1.0.2o  27 Mar 2018), cryptography 2.2.1, Platform Windows-7-6.1.7601-SP1\n2018-10-23 18:28:34 [scrapy.crawler] INFO: Overridden settings: {'BOT_NAME': 'demo', 'CONCURRENT_REQUESTS': 2, 'COOKIES_ENABLED': False, 'DOWNLOAD_DELAY': 1, 'FEED_URI': 'file:///C:/Users/win7/items/demo/test/2018-10-23_182826.jl', 'LOGSTATS_INTERVAL': 1, 'LOG_FILE': 'logs/demo/test/2018-10-23_182826.log', 'NEWSPIDER_MODULE': 'demo.spiders', 'SPIDER_MODULES': ['demo.spiders'], 'USER_AGENT': 'Mozilla/5.0'}\n2018-10-23 18:28:34 [scrapy.middleware] INFO: Enabled extensions:\n['scrapy.extensions.corestats.CoreStats',\n 'scrapy.extensions.telnet.TelnetConsole',\n 'scrapy.extensions.feedexport.FeedExporter',\n 'scrapy.extensions.logstats.LogStats']\n2018-10-23 18:28:35 [scrapy.middleware] INFO: Enabled downloader middlewares:\n['scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',\n 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',\n 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',\n 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',\n 'scrapy.downloadermiddlewares.retry.RetryMiddleware',\n 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',\n 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',\n 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',\n 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',\n 'scrapy.downloadermiddlewares.stats.DownloaderStats']\n2018-10-23 18:28:35 [scrapy.middleware] INFO: Enabled spider middlewares:\n['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',\n 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware',\n 'scrapy.spidermiddlewares.referer.RefererMiddleware',\n 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',\n 'scrapy.spidermiddlewares.depth.DepthMiddleware']\n2018-10-23 18:28:35 [scrapy.middleware] INFO: Enabled item pipelines:\n[]\n2018-10-23 18:28:35 [scrapy.core.engine] INFO: Spider opened\n2018-10-23 18:28:35 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)\n2018-10-23 18:28:35 [scrapy.extensions.telnet] DEBUG: Telnet console listening on 127.0.0.1:6023\n2018-10-23 18:28:35 [test] DEBUG: test utf8: 测试中文\n2018-10-23 18:28:35 [test] DEBUG: 2018-08-20 09:13:06 [apps_redis] DEBUG: Resuming crawl (675840 requests scheduled)\n2018-10-23 18:28:35 [test] WARNING: warn\n2018-10-23 18:28:35 [test] ERROR: error\n2018-10-23 18:28:35 [test] WARNING: warning\n123abc\n2018-10-23 18:28:35 [test] ERROR: error\n456abc\n2018-10-23 18:28:35 [test] ERROR: error\n456abc\n2018-10-23 18:28:35 [test] CRITICAL: critical\n789abc\n2018-10-23 18:28:35 [test] WARNING: warning\n 123\nabc\n2018-10-23 18:28:35 [test] ERROR: error\n 456\nabc\n2018-10-23 18:28:35 [test] CRITICAL: critical\n2018-10-23 18:28:35 [test] CRITICAL: critical", 
+        "tail": "2018-10-23 18:28:51 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:52 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:53 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:54 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:55 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:56 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:57 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:58 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:58 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 1 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:28:59 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:00 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:01 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:02 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:03 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:04 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:05 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:06 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:07 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:08 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:09 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:10 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:11 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:12 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:13 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:14 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:15 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:16 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:17 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:18 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:19 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:19 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 2 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:29:20 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:21 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:22 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:23 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:24 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:25 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:26 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:27 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:28 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:29 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:30 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:31 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:32 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:33 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:34 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:35 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:36 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:37 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:38 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:39 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:40 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:40 [scrapy.downloadermiddlewares.retry] DEBUG: Gave up retrying <GET https://google.com/> (failed 3 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:29:41 [scrapy.core.scraper] ERROR: Error downloading <GET https://google.com/>\nTraceback (most recent call last):\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/internet/defer.py\", line 1384, in _inlineCallbacks\n    result = result.throwExceptionIntoGenerator(g)\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/python/failure.py\", line 393, in throwExceptionIntoGenerator\n    return g.throw(self.type, self.value, self.tb)\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/scrapy/core/downloader/middleware.py\", line 43, in process_request\n    defer.returnValue((yield download_func(request=request,spider=spider)))\ntwisted.internet.error.TCPTimedOutError: TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:29:41 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:41 [scrapy.core.engine] INFO: Closing spider (finished)\n2018-10-23 18:29:41 [scrapy.extensions.feedexport] INFO: Stored jsonlines feed (2 items) in: file:///C:/Users/win7/items/demo/test/2018-10-23_182826.jl\n2018-10-23 18:29:41 [scrapy.statscollectors] INFO: Dumping Scrapy stats:\n{'downloader/exception_count': 3,\n 'downloader/exception_type_count/twisted.internet.error.TCPTimedOutError': 3,\n b'downloader/request_bytes': 13,\n u'downloader/request_count': 7,\n 'downloader/request_method_count/GET': 7,\n 'downloader/response_bytes': 1669,\n 'downloader/response_count': 4,\n 'downloader/response_status_count/200': 2,\n 'downloader/response_status_count/302': 1,\n 'downloader/response_status_count/404': 1,\n 'dupefilter/filtered': 1,\n 'finish_reason': 'finished',\n 'finish_time': datetime.datetime(2018, 10, 23, 10, 29, 41, 174719),\n 'httperror/response_ignored_count': 1,\n 'httperror/response_ignored_status_count/404': 1,\n 'item_scraped_count': 2,\n 'log_count/CRITICAL': 5,\n 'log_count/DEBUG': 14,\n 'log_count/ERROR': 5,\n 'log_count/INFO': 75,\n 'log_count/WARNING': 3,\n 'offsite/domains': 1,\n 'offsite/filtered': 1,\n 'request_depth_max': 1,\n 'response_received_count': 3,\n 'retry/count': 2,\n 'retry/max_reached': 1,\n 'retry/reason_count/twisted.internet.error.TCPTimedOutError': 2,\n 'scheduler/dequeued': 7,\n 'scheduler/dequeued/memory': 7,\n 'scheduler/enqueued': 7,\n 'scheduler/enqueued/memory': 7,\n 'start_time': datetime.datetime(2018, 10, 23, 10, 28, 35, 70938)}\n2018-10-23 18:29:42 [scrapy.core.engine] INFO: Spider closed (finished)", 
+        "first_log_time": "2018-10-23 18:28:34", 
+        "latest_log_time": "2018-10-23 18:29:42", 
+        "runtime": "0:01:08", 
+        "first_log_timestamp": 1540290514, 
+        "latest_log_timestamp": 1540290582, 
+        "datas": [
+            [
+                "2018-10-23 18:28:35", 
+                0, 
+                0, 
+                0, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:36", 
+                0, 
+                0, 
+                0, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:37", 
+                1, 
+                60, 
+                0, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:38", 
+                2, 
+                60, 
+                1, 
+                60
+            ], 
+            [
+                "2018-10-23 18:28:39", 
+                2, 
+                0, 
+                1, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:40", 
+                3, 
+                60, 
+                2, 
+                60
+            ], 
+            [
+                "2018-10-23 18:28:41", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:42", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:43", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:44", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:45", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:46", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:47", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:48", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:49", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:50", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:51", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:52", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:53", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:54", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:55", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:56", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:57", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:58", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:59", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:00", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:01", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:02", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:03", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:04", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:05", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:06", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:07", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:08", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:09", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:10", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:11", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:12", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:13", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:14", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:15", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:16", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:17", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:18", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:19", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:20", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:21", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:22", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:23", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:24", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:25", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:26", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:27", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:28", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:29", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:30", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:31", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:32", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:33", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:34", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:35", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:36", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:37", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:38", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:39", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:40", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:41", 
+                3, 
+                0, 
+                2, 
+                0
+            ]
+        ], 
+        "pages": 3, 
+        "items": 2, 
+        "latest_matches": {
+            "scrapy_version": "1.5.1", 
+            "telnet_console": "127.0.0.1:6023", 
+            "telnet_username": "", 
+            "telnet_password": "", 
+            "resuming_crawl": "2018-10-23 18:28:35 [test] DEBUG: 2018-08-20 09:13:06 [apps_redis] DEBUG: Resuming crawl (675840 requests scheduled)", 
+            "latest_offsite": "2018-10-23 18:28:37 [scrapy.spidermiddlewares.offsite] DEBUG: Filtered offsite request to 'www.baidu.com': <GET https://www.baidu.com/>", 
+            "latest_duplicate": "2018-10-23 18:28:37 [scrapy.dupefilters] DEBUG: Filtered duplicate request: <GET http://httpbin.org/headers> - no more duplicates will be shown (see DUPEFILTER_DEBUG to show all duplicates)", 
+            "latest_crawl": "2018-10-23 18:28:39 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://httpbin.org/headers> (referer: None)", 
+            "latest_scrape": "2018-10-23 18:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://httpbin.org/headers>", 
+            "latest_item": "{'item': 2}", 
+            "latest_stat": "2018-10-23 18:29:41 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)"
+        }, 
+        "latest_crawl_timestamp": 1540290519, 
+        "latest_scrape_timestamp": 1540290519, 
+        "log_categories": {
+            "critical_logs": {
+                "count": 5, 
+                "details": [
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical\r\n789abc", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical\r\n 789\r\nabc", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical"
+                ]
+            }, 
+            "error_logs": {
+                "count": 5, 
+                "details": [
+                    "2018-10-23 18:28:35 [test] ERROR: error", 
+                    "2018-10-23 18:28:35 [test] ERROR: error\r\n456abc", 
+                    "2018-10-23 18:28:35 [test] ERROR: error\r\n456abc", 
+                    "2018-10-23 18:28:35 [test] ERROR: error\r\n 456\r\nabc", 
+                    "2018-10-23 18:29:41 [scrapy.core.scraper] ERROR: Error downloading <GET https://google.com/>\r\nTraceback (most recent call last):\r\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/internet/defer.py\", line 1384, in _inlineCallbacks\r\n    result = result.throwExceptionIntoGenerator(g)\r\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/python/failure.py\", line 393, in throwExceptionIntoGenerator\r\n    return g.throw(self.type, self.value, self.tb)\r\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/scrapy/core/downloader/middleware.py\", line 43, in process_request\r\n    defer.returnValue((yield download_func(request=request,spider=spider)))\r\ntwisted.internet.error.TCPTimedOutError: TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。."
+                ]
+            }, 
+            "warning_logs": {
+                "count": 3, 
+                "details": [
+                    "2018-10-23 18:28:35 [test] WARNING: warn", 
+                    "2018-10-23 18:28:35 [test] WARNING: warning\r\n123abc", 
+                    "2018-10-23 18:28:35 [test] WARNING: warning\r\n 123\r\nabc"
+                ]
+            }, 
+            "redirect_logs": {
+                "count": 1, 
+                "details": [
+                    "2018-10-23 18:28:35 [scrapy.downloadermiddlewares.redirect] DEBUG: Redirecting (302) to <GET http://httpbin.org/get> from <GET http://httpbin.org/redirect/1>"
+                ]
+            }, 
+            "retry_logs": {
+                "count": 2, 
+                "details": [
+                    "2018-10-23 18:28:58 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 1 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.", 
+                    "2018-10-23 18:29:19 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 2 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.", 
+                    "2018-10-23 18:29:40 [scrapy.downloadermiddlewares.retry] DEBUG: Gave up retrying <GET https://google.com/> (failed 3 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。."
+                ]
+            }, 
+            "ignore_logs": {
+                "count": 1, 
+                "details": [
+                    "2018-10-23 18:28:36 [scrapy.spidermiddlewares.httperror] INFO: Ignoring response <404 http://httpbin.org/status/404>: HTTP status code is not handled or not allowed"
+                ]
+            }
+        }, 
+        "shutdown_reason": "N/A", 
+        "finish_reason": "finished", 
+        "crawler_stats": {
+            "source": "log", 
+            "last_update_time": "2018-10-23 18:29:41", 
+            "last_update_timestamp": 1540290581, 
+            "downloader/exception_count": 3, 
+            "downloader/exception_type_count/twisted.internet.error.TCPTimedOutError": 3, 
+            "downloader/request_bytes": 13, 
+            "downloader/request_count": 7, 
+            "downloader/request_method_count/GET": 7, 
+            "downloader/response_bytes": 1669, 
+            "downloader/response_count": 4, 
+            "downloader/response_status_count/200": 2, 
+            "downloader/response_status_count/302": 1, 
+            "downloader/response_status_count/404": 1, 
+            "dupefilter/filtered": 1, 
+            "finish_reason": "finished", 
+            "finish_time": "datetime.datetime(2018, 10, 23, 10, 29, 41, 174719)", 
+            "httperror/response_ignored_count": 1, 
+            "httperror/response_ignored_status_count/404": 1, 
+            "item_scraped_count": 2, 
+            "log_count/CRITICAL": 5, 
+            "log_count/DEBUG": 14, 
+            "log_count/ERROR": 5, 
+            "log_count/INFO": 75, 
+            "log_count/WARNING": 3, 
+            "offsite/domains": 1, 
+            "offsite/filtered": 1, 
+            "request_depth_max": 1, 
+            "response_received_count": 3, 
+            "retry/count": 2, 
+            "retry/max_reached": 1, 
+            "retry/reason_count/twisted.internet.error.TCPTimedOutError": 2, 
+            "scheduler/dequeued": 7, 
+            "scheduler/dequeued/memory": 7, 
+            "scheduler/enqueued": 7, 
+            "scheduler/enqueued/memory": 7, 
+            "start_time": "datetime.datetime(2018, 10, 23, 10, 28, 35, 70938)"
+        }, 
+        "last_update_time": "2019-08-04 14:23:22", 
+        "last_update_timestamp": 1564899802, 
+        "logparser_version": "0.8.2", 
+        "crawler_engine": {}
+    }, 
+    "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo\\test\\2019-01-01T00_00_01.log": {
+        "status": "ok", 
+        "log_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo\\test\\2019-01-01T00_00_01.log", 
+        "_head": 50, 
+        "json_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo\\test\\2019-01-01T00_00_01.json", 
+        "json_url": "http://127.0.0.1:6800/logs/demo/test/2019-01-01T00_00_01.json", 
+        "position": 15862, 
+        "size": 15862, 
+        "head": "2018-10-23 18:28:34 [scrapy.utils.log] INFO: Scrapy 1.5.1 started (bot: demo)\n2018-10-23 18:28:34 [scrapy.utils.log] INFO: Versions: lxml 4.2.1.0, libxml2 2.9.7, cssselect 1.0.3, parsel 1.4.0, w3lib 1.19.0, Twisted 17.5.0, Python 3.6.5 |Anaconda, Inc.| (default, Mar 29 2018, 13:32:41) [MSC v.1900 64 bit (AMD64)], pyOpenSSL 17.5.0 (OpenSSL 1.0.2o  27 Mar 2018), cryptography 2.2.1, Platform Windows-7-6.1.7601-SP1\n2018-10-23 18:28:34 [scrapy.crawler] INFO: Overridden settings: {'BOT_NAME': 'demo', 'CONCURRENT_REQUESTS': 2, 'COOKIES_ENABLED': False, 'DOWNLOAD_DELAY': 1, 'FEED_URI': 'file:///C:/Users/win7/items/demo/test/2018-10-23_182826.jl', 'LOGSTATS_INTERVAL': 1, 'LOG_FILE': 'logs/demo/test/2018-10-23_182826.log', 'NEWSPIDER_MODULE': 'demo.spiders', 'SPIDER_MODULES': ['demo.spiders'], 'USER_AGENT': 'Mozilla/5.0'}\n2018-10-23 18:28:34 [scrapy.middleware] INFO: Enabled extensions:\n['scrapy.extensions.corestats.CoreStats',\n 'scrapy.extensions.telnet.TelnetConsole',\n 'scrapy.extensions.feedexport.FeedExporter',\n 'scrapy.extensions.logstats.LogStats']\n2018-10-23 18:28:35 [scrapy.middleware] INFO: Enabled downloader middlewares:\n['scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',\n 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',\n 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',\n 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',\n 'scrapy.downloadermiddlewares.retry.RetryMiddleware',\n 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',\n 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',\n 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',\n 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',\n 'scrapy.downloadermiddlewares.stats.DownloaderStats']\n2018-10-23 18:28:35 [scrapy.middleware] INFO: Enabled spider middlewares:\n['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',\n 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware',\n 'scrapy.spidermiddlewares.referer.RefererMiddleware',\n 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',\n 'scrapy.spidermiddlewares.depth.DepthMiddleware']\n2018-10-23 18:28:35 [scrapy.middleware] INFO: Enabled item pipelines:\n[]\n2018-10-23 18:28:35 [scrapy.core.engine] INFO: Spider opened\n2018-10-23 18:28:35 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)\n2018-10-23 18:28:35 [scrapy.extensions.telnet] DEBUG: Telnet console listening on 127.0.0.1:6023\n2018-10-23 18:28:35 [test] DEBUG: test utf8: 测试中文\n2018-10-23 18:28:35 [test] DEBUG: 2018-08-20 09:13:06 [apps_redis] DEBUG: Resuming crawl (675840 requests scheduled)\n2018-10-23 18:28:35 [test] WARNING: warn\n2018-10-23 18:28:35 [test] ERROR: error\n2018-10-23 18:28:35 [test] WARNING: warning\n123abc\n2018-10-23 18:28:35 [test] ERROR: error\n456abc\n2018-10-23 18:28:35 [test] ERROR: error\n456abc\n2018-10-23 18:28:35 [test] CRITICAL: critical\n789abc\n2018-10-23 18:28:35 [test] WARNING: warning\n 123\nabc\n2018-10-23 18:28:35 [test] ERROR: error\n 456\nabc\n2018-10-23 18:28:35 [test] CRITICAL: critical\n2018-10-23 18:28:35 [test] CRITICAL: critical", 
+        "tail": "2018-10-23 18:28:51 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:52 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:53 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:54 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:55 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:56 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:57 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:58 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:28:58 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 1 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:28:59 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:00 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:01 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:02 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:03 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:04 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:05 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:06 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:07 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:08 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:09 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:10 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:11 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:12 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:13 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:14 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:15 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:16 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:17 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:18 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:19 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:19 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 2 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:29:20 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:21 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:22 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:23 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:24 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:25 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:26 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:27 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:28 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:29 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:30 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:31 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:32 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:33 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:34 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:35 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:36 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:37 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:38 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:39 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:40 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:40 [scrapy.downloadermiddlewares.retry] DEBUG: Gave up retrying <GET https://google.com/> (failed 3 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:29:41 [scrapy.core.scraper] ERROR: Error downloading <GET https://google.com/>\nTraceback (most recent call last):\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/internet/defer.py\", line 1384, in _inlineCallbacks\n    result = result.throwExceptionIntoGenerator(g)\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/python/failure.py\", line 393, in throwExceptionIntoGenerator\n    return g.throw(self.type, self.value, self.tb)\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/scrapy/core/downloader/middleware.py\", line 43, in process_request\n    defer.returnValue((yield download_func(request=request,spider=spider)))\ntwisted.internet.error.TCPTimedOutError: TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.\n2018-10-23 18:29:41 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)\n2018-10-23 18:29:41 [scrapy.core.engine] INFO: Closing spider (finished)\n2018-10-23 18:29:41 [scrapy.extensions.feedexport] INFO: Stored jsonlines feed (2 items) in: file:///C:/Users/win7/items/demo/test/2018-10-23_182826.jl\n2018-10-23 18:29:41 [scrapy.statscollectors] INFO: Dumping Scrapy stats:\n{'downloader/exception_count': 3,\n 'downloader/exception_type_count/twisted.internet.error.TCPTimedOutError': 3,\n b'downloader/request_bytes': 13,\n u'downloader/request_count': 7,\n 'downloader/request_method_count/GET': 7,\n 'downloader/response_bytes': 1669,\n 'downloader/response_count': 4,\n 'downloader/response_status_count/200': 2,\n 'downloader/response_status_count/302': 1,\n 'downloader/response_status_count/404': 1,\n 'dupefilter/filtered': 1,\n 'finish_reason': 'finished',\n 'finish_time': datetime.datetime(2018, 10, 23, 10, 29, 41, 174719),\n 'httperror/response_ignored_count': 1,\n 'httperror/response_ignored_status_count/404': 1,\n 'item_scraped_count': 2,\n 'log_count/CRITICAL': 5,\n 'log_count/DEBUG': 14,\n 'log_count/ERROR': 5,\n 'log_count/INFO': 75,\n 'log_count/WARNING': 3,\n 'offsite/domains': 1,\n 'offsite/filtered': 1,\n 'request_depth_max': 1,\n 'response_received_count': 3,\n 'retry/count': 2,\n 'retry/max_reached': 1,\n 'retry/reason_count/twisted.internet.error.TCPTimedOutError': 2,\n 'scheduler/dequeued': 7,\n 'scheduler/dequeued/memory': 7,\n 'scheduler/enqueued': 7,\n 'scheduler/enqueued/memory': 7,\n 'start_time': datetime.datetime(2018, 10, 23, 10, 28, 35, 70938)}\n2018-10-23 18:29:42 [scrapy.core.engine] INFO: Spider closed (finished)", 
+        "first_log_time": "2018-10-23 18:28:34", 
+        "latest_log_time": "2018-10-23 18:29:42", 
+        "runtime": "0:01:08", 
+        "first_log_timestamp": 1540290514, 
+        "latest_log_timestamp": 1540290582, 
+        "datas": [
+            [
+                "2018-10-23 18:28:35", 
+                0, 
+                0, 
+                0, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:36", 
+                0, 
+                0, 
+                0, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:37", 
+                1, 
+                60, 
+                0, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:38", 
+                2, 
+                60, 
+                1, 
+                60
+            ], 
+            [
+                "2018-10-23 18:28:39", 
+                2, 
+                0, 
+                1, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:40", 
+                3, 
+                60, 
+                2, 
+                60
+            ], 
+            [
+                "2018-10-23 18:28:41", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:42", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:43", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:44", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:45", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:46", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:47", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:48", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:49", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:50", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:51", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:52", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:53", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:54", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:55", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:56", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:57", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:58", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:28:59", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:00", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:01", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:02", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:03", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:04", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:05", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:06", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:07", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:08", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:09", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:10", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:11", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:12", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:13", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:14", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:15", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:16", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:17", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:18", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:19", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:20", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:21", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:22", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:23", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:24", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:25", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:26", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:27", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:28", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:29", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:30", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:31", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:32", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:33", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:34", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:35", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:36", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:37", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:38", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:39", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:40", 
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            [
+                "2018-10-23 18:29:41", 
+                3, 
+                0, 
+                2, 
+                0
+            ]
+        ], 
+        "pages": 3, 
+        "items": 2, 
+        "latest_matches": {
+            "scrapy_version": "1.5.1", 
+            "telnet_console": "127.0.0.1:6023", 
+            "telnet_username": "", 
+            "telnet_password": "", 
+            "resuming_crawl": "2018-10-23 18:28:35 [test] DEBUG: 2018-08-20 09:13:06 [apps_redis] DEBUG: Resuming crawl (675840 requests scheduled)", 
+            "latest_offsite": "2018-10-23 18:28:37 [scrapy.spidermiddlewares.offsite] DEBUG: Filtered offsite request to 'www.baidu.com': <GET https://www.baidu.com/>", 
+            "latest_duplicate": "2018-10-23 18:28:37 [scrapy.dupefilters] DEBUG: Filtered duplicate request: <GET http://httpbin.org/headers> - no more duplicates will be shown (see DUPEFILTER_DEBUG to show all duplicates)", 
+            "latest_crawl": "2018-10-23 18:28:39 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://httpbin.org/headers> (referer: None)", 
+            "latest_scrape": "2018-10-23 18:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://httpbin.org/headers>", 
+            "latest_item": "{'item': 2}", 
+            "latest_stat": "2018-10-23 18:29:41 [scrapy.extensions.logstats] INFO: Crawled 3 pages (at 0 pages/min), scraped 2 items (at 0 items/min)"
+        }, 
+        "latest_crawl_timestamp": 1540290519, 
+        "latest_scrape_timestamp": 1540290519, 
+        "log_categories": {
+            "critical_logs": {
+                "count": 5, 
+                "details": [
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical\r\n789abc", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical\r\n 789\r\nabc", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical", 
+                    "2018-10-23 18:28:35 [test] CRITICAL: critical"
+                ]
+            }, 
+            "error_logs": {
+                "count": 5, 
+                "details": [
+                    "2018-10-23 18:28:35 [test] ERROR: error", 
+                    "2018-10-23 18:28:35 [test] ERROR: error\r\n456abc", 
+                    "2018-10-23 18:28:35 [test] ERROR: error\r\n456abc", 
+                    "2018-10-23 18:28:35 [test] ERROR: error\r\n 456\r\nabc", 
+                    "2018-10-23 18:29:41 [scrapy.core.scraper] ERROR: Error downloading <GET https://google.com/>\r\nTraceback (most recent call last):\r\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/internet/defer.py\", line 1384, in _inlineCallbacks\r\n    result = result.throwExceptionIntoGenerator(g)\r\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/twisted/python/failure.py\", line 393, in throwExceptionIntoGenerator\r\n    return g.throw(self.type, self.value, self.tb)\r\n  File \"e:/programdata/anaconda3/envs/py3/lib/site-packages/scrapy/core/downloader/middleware.py\", line 43, in process_request\r\n    defer.returnValue((yield download_func(request=request,spider=spider)))\r\ntwisted.internet.error.TCPTimedOutError: TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。."
+                ]
+            }, 
+            "warning_logs": {
+                "count": 3, 
+                "details": [
+                    "2018-10-23 18:28:35 [test] WARNING: warn", 
+                    "2018-10-23 18:28:35 [test] WARNING: warning\r\n123abc", 
+                    "2018-10-23 18:28:35 [test] WARNING: warning\r\n 123\r\nabc"
+                ]
+            }, 
+            "redirect_logs": {
+                "count": 1, 
+                "details": [
+                    "2018-10-23 18:28:35 [scrapy.downloadermiddlewares.redirect] DEBUG: Redirecting (302) to <GET http://httpbin.org/get> from <GET http://httpbin.org/redirect/1>"
+                ]
+            }, 
+            "retry_logs": {
+                "count": 2, 
+                "details": [
+                    "2018-10-23 18:28:58 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 1 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.", 
+                    "2018-10-23 18:29:19 [scrapy.downloadermiddlewares.retry] DEBUG: Retrying <GET https://google.com/> (failed 2 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.", 
+                    "2018-10-23 18:29:40 [scrapy.downloadermiddlewares.retry] DEBUG: Gave up retrying <GET https://google.com/> (failed 3 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。."
+                ]
+            }, 
+            "ignore_logs": {
+                "count": 1, 
+                "details": [
+                    "2018-10-23 18:28:36 [scrapy.spidermiddlewares.httperror] INFO: Ignoring response <404 http://httpbin.org/status/404>: HTTP status code is not handled or not allowed"
+                ]
+            }
+        }, 
+        "shutdown_reason": "N/A", 
+        "finish_reason": "finished", 
+        "crawler_stats": {
+            "source": "log", 
+            "last_update_time": "2018-10-23 18:29:41", 
+            "last_update_timestamp": 1540290581, 
+            "downloader/exception_count": 3, 
+            "downloader/exception_type_count/twisted.internet.error.TCPTimedOutError": 3, 
+            "downloader/request_bytes": 13, 
+            "downloader/request_count": 7, 
+            "downloader/request_method_count/GET": 7, 
+            "downloader/response_bytes": 1669, 
+            "downloader/response_count": 4, 
+            "downloader/response_status_count/200": 2, 
+            "downloader/response_status_count/302": 1, 
+            "downloader/response_status_count/404": 1, 
+            "dupefilter/filtered": 1, 
+            "finish_reason": "finished", 
+            "finish_time": "datetime.datetime(2018, 10, 23, 10, 29, 41, 174719)", 
+            "httperror/response_ignored_count": 1, 
+            "httperror/response_ignored_status_count/404": 1, 
+            "item_scraped_count": 2, 
+            "log_count/CRITICAL": 5, 
+            "log_count/DEBUG": 14, 
+            "log_count/ERROR": 5, 
+            "log_count/INFO": 75, 
+            "log_count/WARNING": 3, 
+            "offsite/domains": 1, 
+            "offsite/filtered": 1, 
+            "request_depth_max": 1, 
+            "response_received_count": 3, 
+            "retry/count": 2, 
+            "retry/max_reached": 1, 
+            "retry/reason_count/twisted.internet.error.TCPTimedOutError": 2, 
+            "scheduler/dequeued": 7, 
+            "scheduler/dequeued/memory": 7, 
+            "scheduler/enqueued": 7, 
+            "scheduler/enqueued/memory": 7, 
+            "start_time": "datetime.datetime(2018, 10, 23, 10, 28, 35, 70938)"
+        }, 
+        "last_update_time": "2019-08-04 14:23:22", 
+        "last_update_timestamp": 1564899802, 
+        "logparser_version": "0.8.2", 
+        "crawler_engine": {}
+    }
+}

@@ -1,265 +1,305 @@
 # coding: utf-8
-from datetime import datetime
+import glob
 import io
 import json
+import locale
 import os
 import platform
-from subprocess import Popen
+import re
+from shutil import rmtree, copy
 import sys
 import time
+import zipfile
 
-from logparser import __version__
+from flask import url_for
+from six import string_types
 
-
-if len(os.linesep) == 2:
-    SIZE = 15862  # In Windows, os.linesep is '\r\n'
-else:
-    SIZE = 15862 - (180 - 1)  # 180 lines in 2019-01-01T00_00_01.log
+from logparser import __version__ as logparser_version
+from scrapydweb.vars import DATABASE_PATH, LEGAL_NAME_PATTERN, STATS_PATH, setup_logfile
 
 
 class Constant(object):
-    ON_WINDOWS = platform.system() == 'Windows'
-    PY2 = sys.version_info.major < 3
+    PROJECT = 'ScrapydWeb_demo'
+    VERSION = '2018-01-01T01_01_01'
+    SPIDER = 'test'
+    JOBID = '2018-01-01T01_01_02'
+
+    FAKE_PROJECT = 'FAKE_PROJECT'
+    FAKE_VERSION = 'FAKE_VERSION'
+    FAKE_SPIDER = 'FAKE_SPIDER'
+    FAKE_JOBID = 'FAKE_JOBID'
 
     NA = 'N/A'
-    LOGPARSER_VERSION = __version__
-    SIZE = SIZE
-    STATUS = 'ok'
-    SCRAPYD_SERVER = '127.0.0.1:6800'
-    LOG_ENCODING = 'utf-8'
-    LOG_EXTENSIONS = ['.log', '.txt']
-    LOG_HEAD_LINES = 50
-    LOG_TAIL_LINES = 100
+    OK = 'ok'
+    ERROR = 'error'
+    BIGINT = 9876543210
+    DEFAULT_LATEST_VERSION = 'default: the latest version'
+    STRICT_NAME_PATTERN = re.compile(r'[^0-9A-Za-z_]')
+    DEMO_JOBID = 'ScrapydWeb_demo'
+    DEMO_LOG = 'ScrapydWeb_demo.log'
+    DEMO_JSON = 'ScrapydWeb_demo.json'
+    DEMO_UNFINISHED_LOG = 'ScrapydWeb_demo_unfinished.log'
+    DEMO_UNFINISHED_JSON = 'ScrapydWeb_demo_unfinished.json'
 
-    PROJECT = 'demo'
-    SPIDER = 'test'
-    JOB = '2019-01-01T00_00_01'
-    # JOB_KEY = '%s/%s/%s' % (PROJECT, SPIDER, JOB)
-    # JOB_TEMP_KEY = JOB_KEY + '_temp'
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    LOGPARSER_VERSION = logparser_version
 
-    PROJECT_TXT = 'demo_txt'
-    SPIDER_TXT = 'test_txt'
-    JOB_TXT = '2019-01-01T00_00_02'
-    # JOB_TXT_KEY = '%s/%s/%s' % (PROJECT_TXT, SPIDER_TXT, JOB_TXT)
+    # ?flash=Add task #1 (Chinese 中文) successfully, next run at 2019-01-01 00:00:01.176468+08:00. Reload this page
+    TASK_NEXT_RUN_TIME_PATTERN = re.compile(r"[ ]task #(\d+).+?next run at (.+?)\.[ ]")
 
-    CWD = os.path.dirname(os.path.abspath(__file__))
-    LOGS_ZIP_PATH = os.path.join(CWD, 'logs.zip')
-    LOGS_PATH = os.path.join(CWD, 'logs')
-    LOG_PATH = os.path.join(LOGS_PATH, PROJECT, SPIDER, '%s.log' % JOB)
-    LOG_TEMP_PATH = os.path.join(LOGS_PATH, PROJECT, SPIDER, '%s_temp.log' % JOB)
-    TXT_PATH = os.path.join(LOGS_PATH, PROJECT_TXT, SPIDER_TXT, '%s.txt' % JOB_TXT)
-
-    DEMO_PROJECT_PATH = os.path.join(CWD, 'demo_project')
-    DEMO_PROJECT_LOG_FOLDER_PATH = os.path.join(LOGS_PATH, 'demo_project', 'example')
-
-    LOG_JSON_PATH = os.path.join(LOGS_PATH, PROJECT, SPIDER, '%s.json' % JOB)
-    LOG_JSON_TEMP_PATH = os.path.join(LOGS_PATH, PROJECT, SPIDER, '%s_temp.json' % JOB)
-    TXT_JSON_PATH = os.path.join(LOGS_PATH, PROJECT_TXT, SPIDER_TXT, '%s.json' % JOB_TXT)
-
-    GBK_LOG_PATH = os.path.join(LOGS_PATH, 'gbk.log')
-    STATS_JSON_PATH = os.path.join(LOGS_PATH, 'stats.json')
-    DATAS_COMPLETE_JSON_PATH = os.path.join(LOGS_PATH, 'datas_complete.json')
-    DATAS_SIMPLIFIED_JSON_PATH = os.path.join(LOGS_PATH, 'datas_simplified.json')
-    APPENDED_LOG_PATH = os.path.join(LOGS_PATH, 'appended_log.log')
-
-    PARSE_KEYS = [
-        'head',
-        'tail',
-        'first_log_time',
-        'latest_log_time',
-        'runtime',
-        'first_log_timestamp',
-        'latest_log_timestamp',
-        'datas',
-        'pages',
-        'items',
-        'latest_matches',
-        'latest_crawl_timestamp',
-        'latest_scrape_timestamp',
-        'log_categories',
-        'shutdown_reason',
-        'finish_reason',
-        'crawler_stats',
-        'last_update_time',
-        'last_update_timestamp',
-        'logparser_version'
-    ]
-
-    META_KEYS = [
-        'log_path',
-        'json_path',
-        'json_url',
-        'size',
-        'position',
-        'status',
-        '_head'
-    ]
-
-    FULL_EXTENDED_KEYS = [
-        'crawler_engine',
-    ]
-
-    SIMPLIFIED_KEYS = [
-        'pages',
-        'items',
-        'first_log_time',
-        'latest_log_time',
-        'runtime',
-        'shutdown_reason',
-        'finish_reason',
-        'last_update_time'
-    ]
-
-    LATEST_MATCHES_RESULT_DICT = dict(
-        scrapy_version='1.5.1',
-        telnet_console='127.0.0.1:6023',
-        telnet_username='',
-        telnet_password='',
-        resuming_crawl='Resuming crawl',
-        latest_offsite='Filtered offsite request to',
-        latest_duplicate='Filtered duplicate request',
-        latest_crawl='Crawled (',
-        latest_scrape='Scraped from',
-        latest_item="{'item': 2}",
-        latest_stat='pages/min'
+    # default UA: werkzeug/0.14.1
+    HEADERS_DICT = dict(
+        Chrome={'User-Agent': 'Chrome'},
+        iPad={'User-Agent': 'iPad'},
+        iPhone={'User-Agent': 'iPhone'},
+        Android={'User-Agent': 'Android'},
+        IE={'User-Agent': 'msie'},
+        EDGE={'User-Agent': 'EDGE'},
     )
 
-    LOG_CATEGORIES_RESULT_DICT = dict(
-        critical_logs=(5, '] CRITICAL:'),
-        error_logs=(5, '] ERROR:'),
-        warning_logs=(3, '] WARNING:'),
-        redirect_logs=(1, ': Redirecting ('),
-        retry_logs=(2, 'etrying <GET '),  # DEBUG: Retrying <GET      DEBUG: Gave up retrying <GET
-        ignore_logs=(1, 'Ignoring response <')
+    SCRAPY_CFG_DICT = dict(
+        demo_only_scrapy_cfg='No module named',  # Result from Scrapyd server
+        demo_without_scrapy_cfg='scrapy.cfg not found',
+
+        scrapy_cfg_no_settings_default='No section: &#39;settings&#39;',
+        scrapy_cfg_no_section_settings='File contains no section headers.',
+        scrapy_cfg_no_option_default='No option &#39;default&#39; in section: &#39;settings&#39;',
+        scrapy_cfg_no_option_default_equal='contains parsing errors',
+        scrapy_cfg_no_option_default_value='returned non-zero exit status',
+
+        scrapy_cfg_no_deploy_project='',
+        scrapy_cfg_no_section_deploy='',
+        scrapy_cfg_no_option_project='',
+        scrapy_cfg_no_option_project_equal='contains parsing errors',
+        scrapy_cfg_no_option_project_value='',
     )
 
-    @staticmethod
-    def json_dumps(obj, sort_keys=False):
-        return json.dumps(obj, ensure_ascii=False, indent=4, sort_keys=sort_keys)
+    VIEW_TITLE_MAP = {
+        'servers': 'Monitor and control',
+        'jobs': 'Get the list of pending',
+        'tasks': 'Get the list of timer tasks',
 
-    def read_data(self, path):
-        with io.open(path, 'r', encoding=self.LOG_ENCODING) as f:
-            return json.loads(f.read())
+        'deploy': 'Add a version to a project',
+        'schedule': 'Schedule a spider run',
+        'projects': 'Get the list of projects uploaded',
 
-    def write_text(self, path, text, append=False):
-        with io.open(path, 'a' if append else 'w', encoding=self.LOG_ENCODING) as f:
-            f.write(text)
+        'logs': 'Directory listing for /logs/',
+        'parse.upload': 'Upload a scrapy logfile to parse',
+        'settings': 'default_settings.py'
+    }
 
-    @staticmethod
-    def string_to_timestamp(string):
-        datetime_obj = datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
-        return int(time.mktime(datetime_obj.timetuple()))
-
-    @staticmethod
-    def timestamp_to_string(timestamp):
-        return datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-
-    def sub_process(self, args, block=False, timeout=60):
-        proc = Popen(args.split())
-        if block:
-            # TODO: In PY2: TypeError: communicate() got an unexpected keyword argument 'timeout'
-            if self.PY2:
-                proc.communicate()
-            else:
-                proc.communicate(timeout=timeout)
-        return proc
-
-    def check_demo_data(self, data, without_stats_dumped=False, modified_logstats=False, log_categories_limit=0):
-        # 2018-10-23 18:29:41 [scrapy.core.engine] INFO: Closing spider (finished)
-        # 2018-10-23 18:29:41 [scrapy.extensions.feedexport] INFO: Stored jsonlines feed
-        if without_stats_dumped:
-            assert ('Scrapy 1.5.1 started' in data['head']
-                    and 'INFO: Closing spider (finished)' not in data['head']
-                    and 'INFO: Stored jsonlines feed' not in data['head']
-                    and 'INFO: Spider closed (finished)' not in data['head'])
-            assert ('Scrapy 1.5.1 started' not in data['tail']
-                    and 'INFO: Closing spider (finished)' in data['tail']
-                    and 'INFO: Stored jsonlines feed' in data['tail']
-                    and 'INFO: Spider closed (finished)' not in data['tail'])
-            assert data['latest_log_time'] == '2018-10-23 18:29:41'
-            # assert data['latest_log_timestamp'] == 1540290581
-            assert data['runtime'] == '0:01:07'
-            assert data['finish_reason'] == self.NA
-            assert data['crawler_stats'] == {}
-        # 2018-10-23 18:29:42 [scrapy.core.engine] INFO: Spider closed (finished)
-        else:
-            assert 'Scrapy 1.5.1 started' in data['head'] and 'INFO: Spider closed (finished)' not in data['head']
-            assert 'Scrapy 1.5.1 started' not in data['tail'] and 'INFO: Spider closed (finished)' in data['tail']
-            assert data['latest_log_time'] == '2018-10-23 18:29:42'
-            # assert data['latest_log_timestamp'] == 1540290582
-            assert data['runtime'] == '0:01:08'
-            assert data['finish_reason'] == 'finished'
-            assert data['crawler_stats']['source'] == 'log'
-
-        assert data['first_log_time'] == '2018-10-23 18:28:34'
-        # assert data['first_log_timestamp'] == 1540290514
-
-        # Time string extracted from logfile doesnot contains timezone info, so avoid using hard coding timestamp.
-        # first_log_timestamp, comes from first_log_time
-        assert self.timestamp_to_string(data['first_log_timestamp']) == data['first_log_time']
-        assert self.timestamp_to_string(data['latest_log_timestamp']) == data['latest_log_time']
-
-        # "last_update_timestamp": 1546272001,
-        # "last_update_time": "2019-01-01 00:00:01", comes from last_update_timestamp
-        assert self.string_to_timestamp(data['last_update_time']) == data['last_update_timestamp']
-
-        assert len(data['datas']) == 67
-        assert data['datas'][0] == ['2018-10-23 18:28:35', 0, 0, 0, 0]
-        if modified_logstats:  # To test update_data_with_crawler_stats()
-            assert data['datas'][-1] == ['2018-10-23 18:29:41', 1, 2, 3, 4]
-        else:
-            assert data['datas'][-1] == ['2018-10-23 18:29:41', 3, 0, 2, 0]
-        assert data['pages'] == 3
-        assert data['items'] == 2
-        for k, v in self.LATEST_MATCHES_RESULT_DICT.items():
-            if k in ['telnet_username', 'telnet_password']:
-                assert not v
-            else:
-                assert v in data['latest_matches'][k]
-
-        # "latest_crawl_timestamp": 1540290519, comes from ['latest_matches']['latest_crawl'][:19]
-        # "latest_scrape_timestamp": 1540290519, comes from ['latest_matches']['latest_scrape'][:19]
-        for k in ['latest_crawl', 'latest_scrape']:
-            assert self.timestamp_to_string(data['%s_timestamp' % k]) == data['latest_matches'][k][:19]
-
-        for k, (count, keyword) in self.LOG_CATEGORIES_RESULT_DICT.items():
-            for detail in data['log_categories'][k]['details']:
-                assert keyword in detail
-            assert data['log_categories'][k]['count'] == count
-            # 'count' would exclude: 'DEBUG: Retrying <GET'
-            # 'details' would include: 'DEBUG: Gave up retrying <GET'
-            actual_count = 3 if k == 'retry_logs' else count
-            expect_count = actual_count if log_categories_limit == 0 else min(log_categories_limit, actual_count)
-            assert len(data['log_categories'][k]['details']) == expect_count
-            # Ensure the last N but not the first N is kept, see test_log_categories_limit()
-            # 2018-10-23 18:28:35 [test] ERROR: error
-            # ...
-            # 2018-10-23 18:29:41 [scrapy.core.scraper] ERROR: Error downloading
-            if k == 'error_logs':
-                assert '2018-10-23 18:29:41 [scrapy.core.scraper] ERROR' in data['log_categories'][k]['details'][-1]
-        assert data['shutdown_reason'] == self.NA
+    (_language_code, _encoding) = locale.getdefaultlocale()
+    WINDOWS_NOT_CP936 = platform.system() == 'Windows' and _encoding != 'cp936'
 
 
 cst = Constant()
 
-SETTINGS = dict(
-    scrapyd_server=cst.SCRAPYD_SERVER,
-    scrapyd_logs_dir=cst.LOGS_PATH,  # ''
-    parse_round_interval=0,  # 10
-    enable_telnet=True,
-    override_telnet_console_host='',
-    log_encoding=cst.LOG_ENCODING,
-    log_extensions=cst.LOG_EXTENSIONS,
-    log_head_lines=cst.LOG_HEAD_LINES,  # 100 => 50, 180 lines in total
-    log_tail_lines=cst.LOG_TAIL_LINES,  # 200 => 100
-    log_categories_limit=10,  # 10
-    jobs_to_keep=100,
-    chunk_size=10 * 1000 * 1000,  # 10 MB
-    delete_existing_json_files_at_startup=False,
-    keep_data_in_memory=False,
-    # verbose=True,
-    verbose=False,
-    main_pid=0,
-    debug=True,  # False
-    exit_timeout=0.001  # 0
-)
+
+def get_text(response):
+    return response.get_data(as_text=True)
+
+
+def req(app, client, view='', kws=None, url='', data=None, ins=None, nos=None, jskws=None, jskeys=None,
+        location=None, mobileui=False, headers=None, single_scrapyd=False, set_to_second=False, save=''):
+    if single_scrapyd:
+        set_single_scrapyd(app, set_to_second)
+
+    with app.test_request_context():
+        if not url:
+            url = url_for(view, **kws)
+        if data is not None:
+            response = client.post(url, headers=headers, data=data, content_type='multipart/form-data')
+        else:
+            response = client.get(url, headers=headers)
+        if save:
+            with io.open('%s.html' % save, 'wb') as f:
+                f.write(response.data)
+        text = get_text(response)
+        # print(text)
+        js = {}
+        try:
+            # js = response.get_json()
+            js = json.loads(text)
+        except ValueError:  # issubclass(JSONDecodeError, ValueError)
+            pass
+        print("js: %s" % js)
+        try:
+            if isinstance(ins, string_types):
+                try:
+                    print("ins: %s" % ins)
+                except:  # For compatibility with Win10 Python2
+                    print("ins: %s" % repr(ins))
+                assert ins in text
+            elif isinstance(ins, list):
+                for i in ins:
+                    try:
+                        print("ins: %s" % i)
+                    except:
+                        print("ins: %s" % repr(i))
+                    assert i in text
+            elif ins:
+                raise TypeError("The argument 'ins' should be either a string or a list")
+
+            if isinstance(nos, string_types):
+                print("nos: %s" % nos)
+                assert nos not in text
+            elif isinstance(nos, list):
+                for n in nos:
+                    print("nos: %s" % n)
+                    assert n not in text
+            elif nos:
+                raise TypeError("The argument 'nos' should be either a string or a list")
+
+            if location:
+                print("response.headers['Location']: %s" % response.headers['Location'])
+                print("location: %s" % location)
+                try:
+                    assert response.headers['Location'].endswith(location)
+                except AssertionError:
+                    assert location in response.headers['Location']
+
+            if jskws:
+                for k, v in jskws.items():
+                    print("jskws: %s = %s" % (k, v))
+                    try:
+                        assert js[k] == v
+                    except AssertionError:
+                        # v is an element of js[k] or a substring of js[k]
+                        assert v in js[k]
+
+            if jskeys:
+                if isinstance(jskeys, string_types):
+                    print("jskeys: %s" % jskeys)
+                    assert jskeys in js.keys()
+                elif isinstance(jskeys, list):
+                    for k in jskeys:
+                        print("jskeys: %s" % k)
+                        assert k in js.keys()
+                elif jskeys:
+                    raise TypeError("The argument 'jskeys' should be either a string or a list")
+
+            if mobileui:
+                assert 'Desktop version' in text
+            else:
+                assert 'Desktop version' not in text
+        except:
+            with io.open('response.html', 'wb') as f:
+                f.write(response.data)
+            raise
+
+        return text, js
+
+
+def req_single_scrapyd(*args, **kwargs):
+    kwargs.update(single_scrapyd=True)
+    return req(*args, **kwargs)
+
+
+def set_single_scrapyd(app, set_to_second=False):
+    if len(app.config['SCRAPYD_SERVERS']) > 1:
+        index = -1 if set_to_second else 0
+        app.config['SCRAPYD_SERVERS'] = [app.config['SCRAPYD_SERVERS'][index]]
+        app.config['SCRAPYD_SERVERS_AUTHS'] = [app.config['SCRAPYD_SERVERS_AUTHS'][index]]
+        app.config['SCRAPYD_SERVERS_AMOUNT'] = 1
+
+
+def switch_scrapyd(app):
+    if len(app.config['SCRAPYD_SERVERS']) > 1:
+        app.config['SCRAPYD_SERVERS'] = app.config['SCRAPYD_SERVERS'][::-1]
+        app.config['SCRAPYD_SERVERS_AUTHS'] = app.config['SCRAPYD_SERVERS_AUTHS'][::-1]
+
+
+def sleep(seconds=10):
+    time.sleep(seconds)
+
+
+def replace_file_content(filepath, old, new):
+    with io.open(filepath, 'r+', encoding='utf-8') as f:
+        content = f.read()
+        f.seek(0)
+        f.write(content.replace(old, new))
+        print("replace %s to %s in %s" % (old, new, filepath))
+
+
+def setup_env(custom_settings):
+    for file in glob.glob(os.path.join(DATABASE_PATH, '*.db')):
+        os.remove(file)
+        print("Removed %s" % file)
+
+    if os.path.isdir(STATS_PATH):
+        rmtree(STATS_PATH, ignore_errors=True)
+        print("rmtree %s" % STATS_PATH)
+
+    setup_logfile(delete=True)
+    print("setup_logfile(delete=True)")
+
+    if not custom_settings.get('SCRAPYD_LOGS_DIR', ''):
+        custom_settings['SCRAPYD_LOGS_DIR'] = os.path.join(os.path.expanduser('~'), 'logs')
+        print("Setting SCRAPYD_LOGS_DIR to: %s" % custom_settings['SCRAPYD_LOGS_DIR'])
+    scrapyd_logs_dir = custom_settings['SCRAPYD_LOGS_DIR']
+    if not os.path.isdir(scrapyd_logs_dir):
+        sys.exit("custom_settings['SCRAPYD_LOGS_DIR'] not found: %s" % repr(scrapyd_logs_dir))
+    else:
+        logs_ScrapydWeb_demo = os.path.join(scrapyd_logs_dir, cst.PROJECT)
+        if os.path.isdir(logs_ScrapydWeb_demo):
+            rmtree(logs_ScrapydWeb_demo, ignore_errors=True)
+            print("rmtree %s" % logs_ScrapydWeb_demo)
+
+    data_folder = os.path.join(cst.ROOT_DIR, 'data')
+    if os.path.isdir(data_folder):
+        rmtree(data_folder, ignore_errors=True)
+    sleep(3)
+    with zipfile.ZipFile(os.path.join(cst.ROOT_DIR, 'data.zip'), 'r') as f:
+        f.extractall(cst.ROOT_DIR)
+
+    project_path = os.path.join(scrapyd_logs_dir, cst.PROJECT)
+    spider_path = os.path.join(project_path, cst.SPIDER)
+    for path in [project_path, spider_path]:
+        if not os.path.isdir(path):
+            os.mkdir(path)
+    src = os.path.join(cst.ROOT_DIR, 'data', cst.DEMO_LOG)
+    for filename in [cst.DEMO_LOG, cst.DEMO_UNFINISHED_LOG]:
+        dst = os.path.join(spider_path, filename)
+        copy(src, dst)
+        print("Copied to %s from %s" % (dst, src))
+        # 'finish_reason': 'finished',
+        if filename == cst.DEMO_UNFINISHED_LOG:
+            replace_file_content(dst, "'finish_reason'", "'finish_reason_removed'")
+    stats_json_path = os.path.join(scrapyd_logs_dir, 'stats.json')
+    demo_json_path = os.path.join(spider_path, cst.DEMO_JSON)
+    demo_unfinished_json_path = os.path.join(spider_path, cst.DEMO_UNFINISHED_JSON)
+    custom_settings['STATS_JSON_PATH'] = stats_json_path
+    custom_settings['DEMO_JSON_PATH'] = demo_json_path
+    custom_settings['DEMO_LOG_PATH'] = os.path.join(spider_path, cst.DEMO_LOG)
+    for path in [stats_json_path, demo_json_path, demo_unfinished_json_path]:
+        if os.path.exists(path):
+            os.remove(path)
+            print("Deleted: %s" % path)
+    node = re.sub(LEGAL_NAME_PATTERN, '-', re.sub(r'[.:]', '_', custom_settings['_SCRAPYD_SERVER']))
+    custom_settings['BACKUP_DEMO_JSON_PATH'] = os.path.join(STATS_PATH, node, cst.PROJECT, cst.SPIDER, cst.DEMO_JSON)
+
+
+def upload_file_deploy(app, client, filename, project, multinode=False,
+                       fail=False, redirect_project=None, alert=None):
+    data = {
+        'project': project,
+        'version': cst.VERSION,
+        'file': (os.path.join(cst.ROOT_DIR, u'data/%s' % filename), filename)
+    }
+    if multinode:
+        data.update({'1': 'on', '2': 'on', 'checked_amount': '2'})
+    with app.test_request_context():
+        url = url_for('deploy.upload', node=1)
+        response = client.post(url, content_type='multipart/form-data', data=data)
+        text = get_text(response)
+        if fail:
+            assert response.status_code == 200 and "fail - ScrapydWeb" in text
+        else:
+            url_redirect = url_for('schedule', node=1, project=redirect_project, version=cst.VERSION)
+            if multinode:
+                assert response.status_code == 200 and "deploy results - ScrapydWeb" in text and url_redirect in text
+            else:
+                assert response.status_code == 302 and response.headers['Location'].endswith(url_redirect)
+
+        if alert:
+            assert alert in text

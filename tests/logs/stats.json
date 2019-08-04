@@ -1,0 +1,69 @@
+{
+    "last_update_time": "2019-08-04 14:23:22", 
+    "settings_py": "G:/pydata/pycode/github/logparser/logparser/settings.py", 
+    "status": "ok", 
+    "settings": {
+        "log_tail_lines": 200, 
+        "override_telnet_console_host": "", 
+        "verbose": false, 
+        "log_head_lines": 100, 
+        "delete_existing_json_files_at_startup": false, 
+        "parse_round_interval": 10, 
+        "keep_data_in_memory": false, 
+        "log_encoding": "utf-8", 
+        "log_categories_limit": 10, 
+        "enable_telnet": true, 
+        "chunk_size": 10000000, 
+        "scrapyd_server": "127.0.0.1:6800", 
+        "scrapyd_logs_dir": "", 
+        "jobs_to_keep": 100, 
+        "log_extensions": [
+            ".log", 
+            ".txt"
+        ]
+    }, 
+    "last_update_timestamp": 1564899802, 
+    "logparser_version": "0.8.2", 
+    "datas": {
+        "demo_txt": {
+            "test_txt": {
+                "2019-01-01T00_00_02": {
+                    "status": "ok", 
+                    "latest_log_time": "2018-10-23 18:29:42", 
+                    "last_update_time": "2019-08-04 14:23:22", 
+                    "position": 15862, 
+                    "shutdown_reason": "N/A", 
+                    "log_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo_txt\\test_txt\\2019-01-01T00_00_02.txt", 
+                    "finish_reason": "finished", 
+                    "items": 2, 
+                    "json_url": "http://127.0.0.1:6800/logs/demo_txt/test_txt/2019-01-01T00_00_02.json", 
+                    "first_log_time": "2018-10-23 18:28:34", 
+                    "runtime": "0:01:08", 
+                    "json_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo_txt\\test_txt\\2019-01-01T00_00_02.json", 
+                    "pages": 3, 
+                    "size": 15862
+                }
+            }
+        }, 
+        "demo": {
+            "test": {
+                "2019-01-01T00_00_01": {
+                    "status": "ok", 
+                    "latest_log_time": "2018-10-23 18:29:42", 
+                    "last_update_time": "2019-08-04 14:23:22", 
+                    "position": 15862, 
+                    "shutdown_reason": "N/A", 
+                    "log_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo\\test\\2019-01-01T00_00_01.log", 
+                    "finish_reason": "finished", 
+                    "items": 2, 
+                    "json_url": "http://127.0.0.1:6800/logs/demo/test/2019-01-01T00_00_01.json", 
+                    "first_log_time": "2018-10-23 18:28:34", 
+                    "runtime": "0:01:08", 
+                    "json_path": "G:\\pydata\\pycode\\github\\logparser\\tests\\logs\\demo\\test\\2019-01-01T00_00_01.json", 
+                    "pages": 3, 
+                    "size": 15862
+                }
+            }
+        }
+    }
+}
