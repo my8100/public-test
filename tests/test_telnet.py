@@ -8,10 +8,13 @@ from tests.demo_log import TELNET_151_NO_PORT, TELNET_151_PORT_16023, TELNET_160
 from tests.utils import cst
 
 
+# Linux-5.0.9-301.fc30.x86_64-x86_64-with-fedora-30-Thirty'
+on_fedora = 'fedora' in platform.platform()
+
+
 def test_telnet(psr):
     parser = psr(execute_main=False)
-    # Linux-5.0.9-301.fc30.x86_64-x86_64-with-fedora-30-Thirty'
-    on_fedora = 'fedora' in platform.platform()
+
     cwd = os.getcwd()
     os.chdir(cst.DEMO_PROJECT_PATH)
     try:
@@ -84,7 +87,7 @@ def test_disable_telnet(psr):
     cwd = os.getcwd()
     os.chdir(cst.DEMO_PROJECT_PATH)
     try:
-        version = '1.5.1' if cst.ON_WINDOWS else '1.6.0'
+        version = '1.5.1' if (cst.ON_WINDOWS or on_fedora) else '1.6.0'
         cmd = 'pip install scrapy==%s' % version
         cst.sub_process(cmd, block=True)
         for name in ['enable_telnet', 'disable_telnet']:

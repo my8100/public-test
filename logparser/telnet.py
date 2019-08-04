@@ -77,8 +77,9 @@ class MyTelnet(Common):
     # https://stackoverflow.com/questions/18547412/python-telnetlib-to-connect-to-scrapy-telnet-to-read-stats
     def run(self):
         self.logger.debug("scrapy_version: %s", self.scrapy_version)
+        # Telnet via pexpect would cause critical unhandled error in Scrapy log on Fedora.
         if (self.ON_WINDOWS or self.on_fedora) and self.scrapy_version > SUPPORTED_SCRAPY_VERSION:
-            self.logger.error("Telnet only supports scrapy<=%s on Windows, current scrapy_version: %s",
+            self.logger.error("Telnet only supports scrapy<=%s on Windows and Fedora, current scrapy_version: %s",
                               SUPPORTED_SCRAPY_VERSION, self.scrapy_version)
             return
         # Telnet console listening on 127.0.0.1:6023
