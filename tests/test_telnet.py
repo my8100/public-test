@@ -4,7 +4,8 @@ import platform
 import re
 import time
 
-from tests.demo_log import TELNET_151_PORT_16023
+# Used in test_telnet_fail()
+from tests.demo_log import TELNET_151_NO_PORT, TELNET_151_PORT_16023, TELNET_160_PORT_16024
 from tests.utils import cst
 
 
