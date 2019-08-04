@@ -1,176 +1,159 @@
-# LogParser: A tool for parsing Scrapy log files periodically and incrementally, designed for [*ScrapydWeb*](https://github.com/my8100/scrapydweb).
+:abc: English | [:mahjong: 简体中文](https://github.com/my8100/scrapydweb/blob/master/README_CN.md)
 
-[![PyPI - logparser Version](https://img.shields.io/pypi/v/logparser.svg)](https://pypi.org/project/logparser/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/logparser.svg)](https://pypi.org/project/logparser/)
-[![CircleCI](https://circleci.com/gh/my8100/logparser/tree/master.svg?style=shield)](https://circleci.com/gh/my8100/logparser/tree/master)
-[![codecov](https://codecov.io/gh/my8100/logparser/branch/master/graph/badge.svg)](https://codecov.io/gh/my8100/logparser)
-[![Coverage Status](https://coveralls.io/repos/github/my8100/logparser/badge.svg?branch=master)](https://coveralls.io/github/my8100/logparser?branch=master)
-[![Downloads - total](https://pepy.tech/badge/logparser)](https://pepy.tech/project/logparser)
-[![GitHub license](https://img.shields.io/github/license/my8100/logparser.svg)](https://github.com/my8100/logparser/blob/master/LICENSE)
+# ScrapydWeb: Web app for Scrapyd cluster management, with support for Scrapy log analysis & visualization.
+
+[![PyPI - scrapydweb Version](https://img.shields.io/pypi/v/scrapydweb.svg)](https://pypi.org/project/scrapydweb/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/scrapydweb.svg)](https://pypi.org/project/scrapydweb/)
+[![CircleCI](https://circleci.com/gh/my8100/scrapydweb/tree/master.svg?style=shield)](https://circleci.com/gh/my8100/scrapydweb/tree/master)
+[![codecov](https://codecov.io/gh/my8100/scrapydweb/branch/master/graph/badge.svg)](https://codecov.io/gh/my8100/scrapydweb)
+[![Coverage Status](https://coveralls.io/repos/github/my8100/scrapydweb/badge.svg?branch=master)](https://coveralls.io/github/my8100/scrapydweb?branch=master)
+[![Downloads - total](https://pepy.tech/badge/scrapydweb)](https://pepy.tech/project/scrapydweb)
+[![GitHub license](https://img.shields.io/github/license/my8100/scrapydweb.svg)](https://github.com/my8100/scrapydweb/blob/master/LICENSE)
+[![Twitter](https://img.shields.io/twitter/url/https/github.com/my8100/scrapydweb.svg?style=social)](https://twitter.com/intent/tweet?text=@my8100_%20ScrapydWeb:%20Web%20app%20for%20Scrapyd%20cluster%20management,%20with%20support%20for%20Scrapy%20log%20analysis%20%26%20visualization.%20%23python%20%23scrapy%20%23scrapyd%20%23webscraping%20%23scrapydweb%20&url=https%3A%2F%2Fgithub.com%2Fmy8100%2Fscrapydweb)
 
 
-## Installation
+##
+![servers](https://raw.githubusercontent.com/my8100/scrapydweb/master/screenshots/servers.png)
+
+## Scrapyd :x: ScrapydWeb :x: LogParser
+### :book: Recommended Reading
+[:link: How to efficiently manage your distributed web scraping projects](https://github.com/my8100/files/blob/master/scrapydweb/README.md)
+
+[:link: How to set up Scrapyd cluster on Heroku](https://github.com/my8100/scrapyd-cluster-on-heroku)
+
+
+## :eyes: Demo
+[:link: scrapydweb.herokuapp.com](https://scrapydweb.herokuapp.com)
+
+
+## :star: Features
+<details>
+<summary>View contents</summary>
+
+- :diamond_shape_with_a_dot_inside: Scrapyd Cluster Management
+  - :100: All Scrapyd JSON API Supported
+  - :ballot_box_with_check: Group, filter and select any number of nodes
+  - :computer_mouse: **Execute command on multinodes with just a few clicks**
+
+- :mag: Scrapy Log Analysis
+  - :bar_chart: Stats collection
+  - :chart_with_upwards_trend: **Progress visualization**
+  - :bookmark_tabs: Logs categorization
+
+- :battery: Enhancements
+  - :package: **Auto packaging**
+  - :male_detective: **Integrated with [:link: *LogParser*](https://github.com/my8100/logparser)**
+  - :alarm_clock: **Timer tasks**
+  - :e-mail: **Email notice**
+  - :iphone: Mobile UI
+  - :closed_lock_with_key: Basic auth for web UI
+
+</details>
+
+
+## :computer: Getting Started
+<details>
+<summary>View contents</summary>
+
+### :warning: Prerequisites
+:heavy_exclamation_mark: **Make sure that [:link: Scrapyd](https://github.com/scrapy/scrapyd) has been installed and started on all of your hosts.**
+
+:bangbang: Note that for remote access, you have to manually set 'bind_address = 0.0.0.0' in [:link: the configuration file of Scrapyd](https://scrapyd.readthedocs.io/en/latest/config.html#example-configuration-file)
+and restart Scrapyd to make it visible externally.
+
+### :arrow_down: Install
 - Use pip:
 ```bash
-pip install logparser
+pip install scrapydweb
 ```
-:heavy_exclamation_mark: Note that you may need to execute `python -m pip install --upgrade pip` first in order to get the latest version of logparser, or download the tar.gz file from https://pypi.org/project/logparser/#files and get it installed via `pip install logparser-x.x.x.tar.gz`
+:heavy_exclamation_mark: Note that you may need to execute `python -m pip install --upgrade pip` first in order to get the latest version of scrapydweb, or download the tar.gz file from https://pypi.org/project/scrapydweb/#files and get it installed via `pip install scrapydweb-x.x.x.tar.gz`
 
 - Use git:
 ```bash
-git clone https://github.com/my8100/logparser.git
-cd logparser
+pip install --upgrade git+https://github.com/my8100/scrapydweb.git
+```
+Or:
+```bash
+git clone https://github.com/my8100/scrapydweb.git
+cd scrapydweb
 python setup.py install
 ```
 
-## Usage
-### To use in Python
+### :arrow_forward: Start
+1. Start ScrapydWeb via command `scrapydweb`. (a config file would be generated for customizing settings at the first startup.)
+2. Visit http://127.0.0.1:5000 **(It's recommended to use Google Chrome for a better experience.)**
+
+### :globe_with_meridians: Browser Support
+The latest version of Google Chrome, Firefox, and Safari.
+
+</details>
+
+
+## :heavy_check_mark: Running the tests
 <details>
-<summary>View codes</summary>
+<summary>View contents</summary>
 
-```python
-In [1]: from logparser import parse
+<br>
 
-In [2]: log = """2018-10-23 18:28:34 [scrapy.utils.log] INFO: Scrapy 1.5.0 started (bot: demo)
-   ...: 2018-10-23 18:29:41 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
-   ...: {'downloader/exception_count': 3,
-   ...:  'downloader/exception_type_count/twisted.internet.error.TCPTimedOutError': 3,
-   ...:  'downloader/request_bytes': 1336,
-   ...:  'downloader/request_count': 7,
-   ...:  'downloader/request_method_count/GET': 7,
-   ...:  'downloader/response_bytes': 1669,
-   ...:  'downloader/response_count': 4,
-   ...:  'downloader/response_status_count/200': 2,
-   ...:  'downloader/response_status_count/302': 1,
-   ...:  'downloader/response_status_count/404': 1,
-   ...:  'dupefilter/filtered': 1,
-   ...:  'finish_reason': 'finished',
-   ...:  'finish_time': datetime.datetime(2018, 10, 23, 10, 29, 41, 174719),
-   ...:  'httperror/response_ignored_count': 1,
-   ...:  'httperror/response_ignored_status_count/404': 1,
-   ...:  'item_scraped_count': 2,
-   ...:  'log_count/CRITICAL': 5,
-   ...:  'log_count/DEBUG': 14,
-   ...:  'log_count/ERROR': 5,
-   ...:  'log_count/INFO': 75,
-   ...:  'log_count/WARNING': 3,
-   ...:  'offsite/domains': 1,
-   ...:  'offsite/filtered': 1,
-   ...:  'request_depth_max': 1,
-   ...:  'response_received_count': 3,
-   ...:  'retry/count': 2,
-   ...:  'retry/max_reached': 1,
-   ...:  'retry/reason_count/twisted.internet.error.TCPTimedOutError': 2,
-   ...:  'scheduler/dequeued': 7,
-   ...:  'scheduler/dequeued/memory': 7,
-   ...:  'scheduler/enqueued': 7,
-   ...:  'scheduler/enqueued/memory': 7,
-   ...:  'start_time': datetime.datetime(2018, 10, 23, 10, 28, 35, 70938)}
-   ...: 2018-10-23 18:29:42 [scrapy.core.engine] INFO: Spider closed (finished)"""
+```bash
+$ git clone https://github.com/my8100/scrapydweb.git
+$ cd scrapydweb
 
-In [3]: odict = parse(log, headlines=1, taillines=1)
+# To create isolated Python environments
+$ pip install virtualenv
+$ virtualenv venv/scrapydweb
+# Or specify your Python interpreter: $ virtualenv -p /usr/local/bin/python3.7 venv/scrapydweb
+$ source venv/scrapydweb/bin/activate
 
-In [4]: odict
-Out[4]:
-OrderedDict([('head',
-              '2018-10-23 18:28:34 [scrapy.utils.log] INFO: Scrapy 1.5.0 started (bot: demo)'),
-             ('tail',
-              '2018-10-23 18:29:42 [scrapy.core.engine] INFO: Spider closed (finished)'),
-             ('first_log_time', '2018-10-23 18:28:34'),
-             ('latest_log_time', '2018-10-23 18:29:42'),
-             ('runtime', '0:01:08'),
-             ('first_log_timestamp', 1540290514),
-             ('latest_log_timestamp', 1540290582),
-             ('datas', []),
-             ('pages', 3),
-             ('items', 2),
-             ('latest_matches',
-              {'telnet_console': '',
-               'resuming_crawl': '',
-               'latest_offsite': '',
-               'latest_duplicate': '',
-               'latest_crawl': '',
-               'latest_scrape': '',
-               'latest_item': '',
-               'latest_stat': ''}),
-             ('latest_crawl_timestamp', 0),
-             ('latest_scrape_timestamp', 0),
-             ('log_categories',
-              {'critical_logs': {'count': 5, 'details': []},
-               'error_logs': {'count': 5, 'details': []},
-               'warning_logs': {'count': 3, 'details': []},
-               'redirect_logs': {'count': 1, 'details': []},
-               'retry_logs': {'count': 2, 'details': []},
-               'ignore_logs': {'count': 1, 'details': []}}),
-             ('shutdown_reason', 'N/A'),
-             ('finish_reason', 'finished'),
-             ('crawler_stats',
-              OrderedDict([('source', 'log'),
-                           ('last_update_time', '2018-10-23 18:29:41'),
-                           ('last_update_timestamp', 1540290581),
-                           ('downloader/exception_count', 3),
-                           ('downloader/exception_type_count/twisted.internet.error.TCPTimedOutError',
-                            3),
-                           ('downloader/request_bytes', 1336),
-                           ('downloader/request_count', 7),
-                           ('downloader/request_method_count/GET', 7),
-                           ('downloader/response_bytes', 1669),
-                           ('downloader/response_count', 4),
-                           ('downloader/response_status_count/200', 2),
-                           ('downloader/response_status_count/302', 1),
-                           ('downloader/response_status_count/404', 1),
-                           ('dupefilter/filtered', 1),
-                           ('finish_reason', 'finished'),
-                           ('finish_time',
-                            'datetime.datetime(2018, 10, 23, 10, 29, 41, 174719)'),
-                           ('httperror/response_ignored_count', 1),
-                           ('httperror/response_ignored_status_count/404', 1),
-                           ('item_scraped_count', 2),
-                           ('log_count/CRITICAL', 5),
-                           ('log_count/DEBUG', 14),
-                           ('log_count/ERROR', 5),
-                           ('log_count/INFO', 75),
-                           ('log_count/WARNING', 3),
-                           ('offsite/domains', 1),
-                           ('offsite/filtered', 1),
-                           ('request_depth_max', 1),
-                           ('response_received_count', 3),
-                           ('retry/count', 2),
-                           ('retry/max_reached', 1),
-                           ('retry/reason_count/twisted.internet.error.TCPTimedOutError',
-                            2),
-                           ('scheduler/dequeued', 7),
-                           ('scheduler/dequeued/memory', 7),
-                           ('scheduler/enqueued', 7),
-                           ('scheduler/enqueued/memory', 7),
-                           ('start_time',
-                            'datetime.datetime(2018, 10, 23, 10, 28, 35, 70938)')])),
-             ('last_update_time', '2019-03-08 16:53:50'),
-             ('last_update_timestamp', 1552035230),
-             ('logparser_version', '0.8.1')])
+# Install dependent libraries
+(scrapydweb) $ python setup.py install
+(scrapydweb) $ pip install pytest
+(scrapydweb) $ pip install coverage
 
-In [5]: odict['runtime']
-Out[5]: '0:01:08'
+# Make sure Scrapyd has been installed and started, then update the custom_settings item in tests/conftest.py
+(scrapydweb) $ vi tests/conftest.py
+(scrapydweb) $ curl http://127.0.0.1:6800
 
-In [6]: odict['pages']
-Out[6]: 3
-
-In [7]: odict['items']
-Out[7]: 2
-
-In [8]: odict['finish_reason']
-Out[8]: 'finished'
+# '-x': stop on first failure
+(scrapydweb) $ coverage run --source=scrapydweb -m pytest tests/test_a_factory.py -s -vv -x
+(scrapydweb) $ coverage run --source=scrapydweb -m pytest tests -s -vv --disable-warnings
+(scrapydweb) $ coverage report
+# To create an HTML report, check out htmlcov/index.html
+(scrapydweb) $ coverage html
 ```
 
 </details>
 
-### To run as a service
-1. **Make sure that [*Scrapyd*](https://github.com/scrapy/scrapyd) has been installed and started on the current host.**
-2. Start ***LogParser*** via command `logparser`
-3. Visit http://127.0.0.1:6800/logs/stats.json **(Assuming the Scrapyd service runs on port 6800.)**
-4. Visit http://127.0.0.1:6800/logs/projectname/spidername/jobid.json to get stats of a job in details.
 
-### To work with *ScrapydWeb* for visualization
-Check out https://github.com/my8100/scrapydweb for more info.
+## :building_construction: Built With
+<details>
+<summary>View contents</summary>
 
-![stats](https://raw.githubusercontent.com/my8100/files/master/scrapydweb/screenshots/stats.gif)
+<br>
+
+- Front End
+  - [:link: Element](https://github.com/ElemeFE/element)
+  - [:link: ECharts](https://github.com/apache/incubator-echarts)
+
+- Back End
+  - [:link: Flask](https://github.com/pallets/flask)
+
+</details>
+
+
+## :clipboard: Changelog
+Detailed changes for each release are documented in the [:link: HISTORY.md](https://github.com/my8100/scrapydweb/blob/master/HISTORY.md).
+
+
+## :man_technologist: Author
+| [<img src="https://github.com/my8100.png" width="100px;"/>](https://github.com/my8100)<br/> [<sub>my8100</sub>](https://github.com/my8100) |
+| --- |
+
+
+## :busts_in_silhouette: Contributors
+| [<img src="https://github.com/simplety.png" width="100px;"/>](https://github.com/simplety)<br/> [<sub>Kaisla</sub>](https://github.com/simplety) |
+| --- |
+
+
+## :copyright: License
+This project is licensed under the GNU General Public License v3.0 - see the [:link: LICENSE](https://github.com/my8100/scrapydweb/blob/master/LICENSE) file for details.
