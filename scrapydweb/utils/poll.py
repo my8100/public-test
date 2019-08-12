@@ -133,7 +133,7 @@ class Poll(object):
         # http://127.0.0.1:5000/log/stats/proxy/test/55f1f388a7ae11e8b9b114dda9e91c2f/
         url = self.url_stats.format(**kwargs)
         self.logger.debug("[node %s] fetch_stats: %s", node, url)
-        # Make POST request to trigger email notice, see log.py
+        # Make POST request to trigger alert, see log.py
         r = self.make_request(url, auth=self.auth, post=True)
         if r is None:
             self.logger.error("[node %s %s] fetch_stats failed: %s", node, self.scrapyd_servers[node-1], url)

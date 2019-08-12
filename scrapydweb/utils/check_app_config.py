@@ -198,7 +198,7 @@ def check_app_config(config):
     check_assert('TELEGRAM_TOKEN', '', str)
 
     if config.get('EMAIL_PASSWORD', None) is not None:
-        check_assert('EMAIL_SUBJECT', 'Email from #scrapydweb', str)
+        check_assert('EMAIL_SUBJECT', '', str)
         check_assert('EMAIL_USERNAME', '', str)  # '' to default to config['FROM_ADDR']
         check_assert('EMAIL_PASSWORD', '', str, non_empty=True)
         check_assert('FROM_ADDR', '', str, non_empty=True)
@@ -346,7 +346,7 @@ def check_scrapyd_servers(config):
 
 
 def check_scrapyd_connectivity(servers):
-    logger.debug("Checking connectivity of SCRAPYD_SERVERS")
+    logger.debug("Checking connectivity of SCRAPYD_SERVERS...")
 
     def check_connectivity(server):
         (_group, _ip, _port, _auth) = server
@@ -380,16 +380,18 @@ def check_scrapyd_connectivity(servers):
 
 def check_slack_telegram(config, service):
     if service == 'slack':
+        logger.debug("Trying to send slack...")
         url = 'https://slack.com/api/chat.postMessage'
-        data = dict(token=config['SLACK_TOKEN'], channel=config['SLACK_CHANNEL'], text='Slack enabled #scrapydweb')
+        text = 'Slack alert enabled #scrapydweb'
+        data = dict(token=config['SLACK_TOKEN'], channel=config['SLACK_CHANNEL'], text=text)
         alert = "Fail to send text via Slack, you may need to set 'ENABLE_SLACK_ALERT = False'"
-        result = "Slack enabled"
     else:
+        logger.debug("Trying to send telegram...")
         url = 'https://api.telegram.org/bot%s/getUpdates' % config['TELEGRAM_TOKEN']
+        text = 'Telegram alert enabled #scrapydweb'
         data = {}
         alert = ("Fail to send text via Telegram, you may need to initiate/update conversations with your bot "
                  "or set 'ENABLE_TELEGRAM_ALERT = False'")
-        result = "Telegram enabled"
     r = None
     try:
         r = session.post(url, data=data, timeout=10)
@@ -398,7 +400,7 @@ def check_slack_telegram(config, service):
         if service == 'telegram':
             assert js.get('result', [])
             url = 'https://api.telegram.org/bot%s/sendMessage' % config['TELEGRAM_TOKEN']
-            data = dict(chat_id=js['result'][-1]['message']['chat']['id'], text='Telegram enabled #scrapydweb')
+            data = dict(chat_id=js['result'][-1]['message']['chat']['id'], text=text)
             r = None
             r = session.post(url, data=data, timeout=10)
             assert r.status_code == 200 and js['ok'] == True
@@ -411,7 +413,7 @@ def check_slack_telegram(config, service):
             logger.error("response: %s", r.text)
         assert False, alert
     else:
-        logger.info(result)
+        logger.info(text)
 
 
 def check_email(config):
@@ -426,7 +428,7 @@ def check_email(config):
         smtp_connection_timeout=config.get('SMTP_CONNECTION_TIMEOUT', 10),
     )
     kwargs['to_retry'] = True
-    kwargs['subject'] = 'Email enabled #scrapydweb'
+    kwargs['subject'] = 'Email alert enabled #scrapydweb'
     kwargs['content'] = json_dumps(dict(FROM_ADDR=config['FROM_ADDR'], TO_ADDRS=config['TO_ADDRS']))
 
     logger.debug("Trying to send email (smtp_connection_timeout=%s)...", config.get('SMTP_CONNECTION_TIMEOUT', 10))
@@ -434,8 +436,7 @@ def check_email(config):
     if not result and os.environ.get('TEST_ON_CIRCLECI', 'False') == 'False':
         logger.debug("kwargs for send_email():\n%s", json_dumps(kwargs, sort_keys=False))
     assert result, "Fail to send email. Modify the email settings above or set 'ENABLE_EMAIL_ALERT = False'"
-
-    logger.info("Email enabled")
+    logger.info(kwargs['subject'])
 
 
 def init_subprocess(config):

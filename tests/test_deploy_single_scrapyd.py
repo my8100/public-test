@@ -41,9 +41,10 @@ def test_auto_packaging_select_option(app, client):
     req_single_scrapyd(app, client, view='deploy', kws=dict(node=1),
                        ins='(1 project)', nos='<h3>No projects found')
 
-    app.config['SCRAPY_PROJECTS_DIR'] = ''
-    req_single_scrapyd(app, client, view='deploy', kws=dict(node=1),
-                       ins=DEMO_PROJECTS_PATH.replace('\\', '/'), nos='<h3>No projects found')
+    if not os.environ.get('DATA_PATH', ''):
+        app.config['SCRAPY_PROJECTS_DIR'] = ''
+        req_single_scrapyd(app, client, view='deploy', kws=dict(node=1),
+                           ins=DEMO_PROJECTS_PATH.replace('\\', '/'), nos='<h3>No projects found')
 
 
 # {'status': 'error', 'message': 'Traceback

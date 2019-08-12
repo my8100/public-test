@@ -177,7 +177,7 @@ jobs:
             coverage html
             coverage xml
             ls -la
-            coveralls
+            # coveralls
       - store_artifacts:
           path: htmlcov
       - store_artifacts:

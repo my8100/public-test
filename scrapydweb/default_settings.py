@@ -176,6 +176,34 @@ DAEMONSTATUS_REFRESH_INTERVAL = 10
 
 
 ############################## Send text ######################################
+########## usage in scrapy project ##########
+"""
+# Remember to add '127.0.0.1' to allowed_domains
+base_url = 'http://127.0.0.1:5000'
+callback_none = lambda x: None
+# Via Slack:
+yield scrapy.Request(base_url+'/slack/some-text-to-channel-general', callback=callback_none)
+yield scrapy.Request(base_url+'/slack/random/send-to-channel-random', callback=callback_none)
+yield scrapy.FormRequest(url=base_url+'/slack',
+                         formdata=dict(channel='random', arg='value', a='1'),
+                         callback=callback_none)
+
+# Via Telegram:
+yield scrapy.Request(base_url+'/tg/some-text-to-telegram', callback=callback_none)
+# JSONRequest is available in Scrapy>=1.7.1
+yield scrapy.http.JSONRequest(url='http://127.0.0.1:5000/tg',
+                              data=dict(arg='value', b=2),
+                              callback=callback_none)
+
+# Via Email:
+yield scrapy.Request(base_url+'/email/some-text-to-email', callback=callback_none)
+yield scrapy.Request(base_url+'/email/new-subject/send-with-new-subject', callback=callback_none)
+yield scrapy.FormRequest(url=base_url+'/email',
+                         formdata=dict(receivers='name1@example.com; name2@example.com',
+                                       subject='post to send an email', arg='value', c='3'),
+                         callback=callback_none)
+"""
+
 ########## slack ##########
 # 'https://api.slack.com/methods/chat.postMessage'
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN', '')
@@ -183,11 +211,12 @@ SLACK_CHANNEL = 'general'
 
 ########## telegram ##########
 # 'https://core.telegram.org/bots#6-botfather'
-# https://api.telegram.org/botfaketoken/getme
+# Visit https://api.telegram.org/botfaketoken/getme
+# to make sure that the Telegram API is reachable (404 is ok) in your network.
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN', '')
 
 ########## email ##########
-# The default subject when sending text via email
+# The default subject when sending text via email.
 EMAIL_SUBJECT = 'Email from #scrapydweb'
 
 ########## email sender & recipients ##########
@@ -201,7 +230,7 @@ EMAIL_USERNAME = ''
 # https://stackoverflow.com/a/27515833/10517783 How to send an email with Gmail as the provider using Python?
 # https://stackoverflow.com/a/26053352/10517783 Python smtplib proxy support
 # e.g. 'password4gmail'
-EMAIL_PASSWORD = ''
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 
 # e.g. 'username@gmail.com'
 FROM_ADDR = ''
@@ -240,23 +269,24 @@ SMTP_CONNECTION_TIMEOUT = 10
 
 
 ############################## Monitor & Alert ################################
+# The default is False, set it to True to launch the poll subprocess to monitor your crawling jobs.
 ENABLE_MONITOR = False
 
 ########## poll interval ##########
+# Tip: In order to be notified (and stop or forcestop a job when triggered) in time,
+# you can reduce the value of POLL_ROUND_INTERVAL and POLL_REQUEST_INTERVAL,
+# at the cost of burdening both CPU and bandwidth of your servers.
+
 # Sleep N seconds before starting next round of poll, the default is 300.
 POLL_ROUND_INTERVAL = 300
 # Sleep N seconds between each request to the Scrapyd server while polling, the default is 10.
 POLL_REQUEST_INTERVAL = 10
 
-# In order to be notified (and stop or forcestop a job when triggered) in time,
-# you can reduce the value of POLL_ROUND_INTERVAL and POLL_REQUEST_INTERVAL,
-# at the cost of burdening both CPU and bandwidth of your servers.
-
-# Tip: set the SCRAPYDWEB_BIND option the in "QUICK SETUP" section to the actual IP of your host,
-# then you can visit ScrapydWeb via the links attached in the email.
-
 ########## alert switcher ##########
-# The default is False, set it to True to enable alert via Slack/Telegram/email.
+# Tip: Set the SCRAPYDWEB_BIND option the in "QUICK SETUP" section to the actual IP of your host,
+# then you can visit ScrapydWeb via the links attached in the alert.
+
+# The default is False, set it to True to enable alert via Slack, Telegram, or Email.
 # You have to set up your accounts in the "Send text" section above first.
 ENABLE_SLACK_ALERT = False
 ENABLE_TELEGRAM_ALERT = False

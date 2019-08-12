@@ -210,7 +210,7 @@ def test_telegram_fail(app, client):
     __, js = req(app, client, view='sendtext', kws=kws)
     check_fail(result="The TELEGRAM_TOKEN option is unset")
 
-    if not token:
+    if not (token and app.config['ENABLE_TELEGRAM_ALERT']) :
         return
     else:
         app.config['TELEGRAM_TOKEN'] = token
@@ -243,8 +243,8 @@ def test_telegram_fail(app, client):
 
 
 def test_telegram_pass(app, client):
-    if not (app.config['ENABLE_TELEGRAM_ALERT'] and app.config['TELEGRAM_TOKEN']):
-        print("TELEGRAM_TOKEN unset")
+    if not (app.config['TELEGRAM_TOKEN'] and app.config['ENABLE_TELEGRAM_ALERT']):
+        print("ENABLE_TELEGRAM_ALERT False or TELEGRAM_TOKEN unset")
         return
 
     def check_pass(text=None):

@@ -100,7 +100,7 @@ class LogView(BaseView):
         self.backup_stats_path = os.path.join(spider_path, job_without_ext + '.json')
         self.stats = {}
 
-        # job_data for email notice: ([0] * 8, [False] * 6, False, time.time())
+        # job_data for monitor & alert: ([0] * 8, [False] * 6, False, time.time())
         self.job_stats_previous = []
         self.triggered_list = []
         self.has_been_stopped = False
@@ -409,7 +409,7 @@ class LogView(BaseView):
 
         self.set_email_content_kwargs()
         self.set_monitor_flag()
-        self.handle_alert()
+        self.send_alert()
         self.handle_data()
 
     def set_email_content_kwargs(self):
@@ -485,6 +485,45 @@ class LogView(BaseView):
         if not self.flag and 0 < self.ON_JOB_RUNNING_INTERVAL <= time.time() - self.last_send_timestamp:
             self.flag = 'Running'
 
+    def send_alert(self):
+        if (self.flag
+            and date.isoweekday(date.today()) in self.ALERT_WORKING_DAYS  # date.isoweekday(datetime.now())
+            and datetime.now().hour in self.ALERT_WORKING_HOURS
+        ):
+            kwargs = dict(
+                flag=self.flag,
+                pages=self.NA if self.kwargs['pages'] is None else self.kwargs['pages'],
+                items=self.NA if self.kwargs['items'] is None else self.kwargs['items'],
+                job_key=self.job_key,
+                latest_item=self.kwargs['latest_matches']['latest_item'][:100] or self.NA
+            )
+            subject = u"{flag} [{pages}p, {items}i] {job_key} {latest_item} #scrapydweb".format(**kwargs)
+            self.EMAIL_KWARGS['subject'] = subject
+            self.EMAIL_KWARGS['content'] = self.json_dumps(self.email_content_kwargs, sort_keys=False)
+
+            data = dict(
+                subject=subject,
+                url_stats=self.email_content_kwargs['url_stats'],
+                url_stop=self.email_content_kwargs['url_stop'],
+                when=self.get_now_string(True),
+            )
+            if self.ENABLE_SLACK_ALERT:
+                self.logger.info("Sending alert via Slack: %s", subject)
+                _url = url_for('sendtext', opt='slack', subject_channel=None, text=None)
+                self.get_response_from_view(_url, data=data)
+            if self.ENABLE_TELEGRAM_ALERT:
+                self.logger.info("Sending alert via Telegram: %s", subject)
+                _url = url_for('sendtext', opt='telegram', subject_channel=None, text=None)
+                self.get_response_from_view(_url, data=data)
+            if self.ENABLE_EMAIL_ALERT:
+                self.logger.info("Sending alert via Email: %s", subject)
+                args = [
+                    sys.executable,
+                    os.path.join(ROOT_DIR, 'utils', 'send_email.py'),
+                    self.json_dumps(self.EMAIL_KWARGS, ensure_ascii=True)
+                ]
+                Popen(args)
+
     def handle_data(self):
         if self.flag:
             # Update job_data_dict (last_send_timestamp would be updated only when flag is non-empty)
@@ -499,45 +538,3 @@ class LogView(BaseView):
             if len(od) > self.jobs_to_keep:
                 od.popitem(last=False)
             self.logger.info('job_finished: %s', self.job_key)
-
-    def handle_alert(self):
-        if self.flag:
-            now_day = date.isoweekday(date.today())  # date.isoweekday(datetime.now())
-            now_hour = datetime.now().hour
-            if now_day in self.ALERT_WORKING_DAYS and now_hour in self.ALERT_WORKING_HOURS:
-                self.send_alert()
-
-    def send_alert(self):
-        kwargs = dict(
-            flag=self.flag,
-            pages=self.NA if self.kwargs['pages'] is None else self.kwargs['pages'],
-            items=self.NA if self.kwargs['items'] is None else self.kwargs['items'],
-            job_key=self.job_key,
-            latest_item=self.kwargs['latest_matches']['latest_item'][:100] or self.NA
-        )
-        subject = u"{flag} [{pages}p, {items}i] {job_key} {latest_item} #scrapydweb".format(**kwargs)
-        self.EMAIL_KWARGS['subject'] = subject
-        self.EMAIL_KWARGS['content'] = self.json_dumps(self.email_content_kwargs, sort_keys=False)
-
-        data = dict(
-            subject=subject,
-            url_stats=self.email_content_kwargs['url_stats'],
-            url_stop=self.email_content_kwargs['url_stop'],
-            when=self.get_now_string(True),
-        )
-        if self.ENABLE_SLACK_ALERT:
-            self.logger.info("Sending alert via Slack: %s", subject)
-            _url = url_for('sendtext', opt='slack', subject_channel=None, text=None)
-            self.get_response_from_view(_url, data=data)
-        if self.ENABLE_TELEGRAM_ALERT:
-            self.logger.info("Sending alert via Telegram: %s", subject)
-            _url = url_for('sendtext', opt='telegram', subject_channel=None, text=None)
-            self.get_response_from_view(_url, data=data)
-        if self.ENABLE_EMAIL_ALERT:
-            self.logger.info("Sending alert via Email: %s", subject)
-            args = [
-                sys.executable,
-                os.path.join(ROOT_DIR, 'utils', 'send_email.py'),
-                self.json_dumps(self.EMAIL_KWARGS, ensure_ascii=True)
-            ]
-            Popen(args)
