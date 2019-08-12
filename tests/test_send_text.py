@@ -243,7 +243,7 @@ def test_telegram_fail(app, client):
 
 
 def test_telegram_pass(app, client):
-    if not app.config['TELEGRAM_TOKEN']:
+    if not (app.config['ENABLE_TELEGRAM_ALERT'] and app.config['TELEGRAM_TOKEN']):
         print("TELEGRAM_TOKEN unset")
         return
 
