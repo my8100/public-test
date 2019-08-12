@@ -8,7 +8,7 @@ from ..common import handle_metadata, handle_slash, json_dumps, session
 from ..models import create_jobs_table, db
 from ..utils.scheduler import scheduler
 from ..utils.setup_database import test_database_url_pattern
-from ..vars import (ALLOWED_SCRAPYD_LOG_EXTENSIONS, EMAIL_TRIGGER_KEYS,
+from ..vars import (ALLOWED_SCRAPYD_LOG_EXTENSIONS, ALERT_TRIGGER_KEYS,
                     SCHEDULER_STATE_DICT, STATE_PAUSED, STATE_RUNNING,
                     SCHEDULE_ADDITIONAL, STRICT_NAME_PATTERN, UA_DICT,
                     jobs_table_map)
@@ -190,14 +190,15 @@ def check_app_config(config):
     check_assert('JOBS_RELOAD_INTERVAL', 300, int)
     check_assert('DAEMONSTATUS_REFRESH_INTERVAL', 10, int)
 
-    # Email Notice
-    check_assert('ENABLE_EMAIL', False, bool)
-    if config.get('ENABLE_EMAIL', False):
-        check_assert('SMTP_SERVER', '', str, non_empty=True)
-        check_assert('SMTP_PORT', 0, int, allow_zero=False)
-        check_assert('SMTP_OVER_SSL', False, bool)
-        check_assert('SMTP_CONNECTION_TIMEOUT', 10, int, allow_zero=False)
+    # Send text
+    check_assert('SLACK_TOKEN', '', str, non_empty=True)
+    check_assert('SLACK_CHANNEL', '', str)
+    config['SLACK_CHANNEL'] = config['SLACK_CHANNEL'] or 'general'
 
+    check_assert('TELEGRAM_TOKEN', '', str)
+
+    if config.get('EMAIL_PASSWORD', None) is not None:
+        check_assert('EMAIL_SUBJECT', 'Email from #scrapydweb', str)
         check_assert('EMAIL_USERNAME', '', str)  # '' to default to config['FROM_ADDR']
         check_assert('EMAIL_PASSWORD', '', str, non_empty=True)
         check_assert('FROM_ADDR', '', str, non_empty=True)
@@ -211,37 +212,54 @@ def check_app_config(config):
         if not config.get('EMAIL_USERNAME', ''):
             config['EMAIL_USERNAME'] = config['FROM_ADDR']
 
-        # For compatibility with Python 3 using range()
-        try:
-            config['EMAIL_WORKING_DAYS'] = list(config.get('EMAIL_WORKING_DAYS', []))
-        except TypeError:
-            pass
-        check_assert('EMAIL_WORKING_DAYS', [], list, non_empty=True, containing_type=int)
-        EMAIL_WORKING_DAYS = config['EMAIL_WORKING_DAYS']
-        assert all([not isinstance(i, bool) and i in range(1, 8) for i in EMAIL_WORKING_DAYS]), \
-            "Element in EMAIL_WORKING_DAYS should be between 1 and 7. Current value: %s" % EMAIL_WORKING_DAYS
+        check_assert('SMTP_SERVER', '', str, non_empty=True)
+        check_assert('SMTP_PORT', 0, int, allow_zero=False)
+        check_assert('SMTP_OVER_SSL', False, bool)
+        check_assert('SMTP_CONNECTION_TIMEOUT', 10, int, allow_zero=False)
 
-        try:
-            config['EMAIL_WORKING_HOURS'] = list(config.get('EMAIL_WORKING_HOURS', []))
-        except TypeError:
-            pass
-        check_assert('EMAIL_WORKING_HOURS', [], list, non_empty=True, containing_type=int)
-        EMAIL_WORKING_HOURS = config['EMAIL_WORKING_HOURS']
-        assert all([not isinstance(i, bool) and i in range(24) for i in EMAIL_WORKING_HOURS]), \
-            "Element in EMAIL_WORKING_HOURS should be between 0 and 23. Current value: %s" % EMAIL_WORKING_HOURS
+    # Monitor & Alert
+    check_assert('ENABLE_MONITOR', False, bool)
+    if config.get('ENABLE_MONITOR', False):
+        check_assert('ENABLE_SLACK_ALERT', False, bool)
+        check_assert('ENABLE_TELEGRAM_ALERT', False, bool)
+        check_assert('ENABLE_EMAIL_ALERT', False, bool)
 
         check_assert('POLL_ROUND_INTERVAL', 300, int, allow_zero=False)
         check_assert('POLL_REQUEST_INTERVAL', 10, int, allow_zero=False)
 
+        # For compatibility with Python 3 using range()
+        try:
+            config['ALERT_WORKING_DAYS'] = list(config.get('ALERT_WORKING_DAYS', []))
+        except TypeError:
+            pass
+        check_assert('ALERT_WORKING_DAYS', [], list, non_empty=True, containing_type=int)
+        ALERT_WORKING_DAYS = config['ALERT_WORKING_DAYS']
+        assert all([not isinstance(i, bool) and i in range(1, 8) for i in ALERT_WORKING_DAYS]), \
+            "Element in ALERT_WORKING_DAYS should be between 1 and 7. Current value: %s" % ALERT_WORKING_DAYS
+
+        try:
+            config['ALERT_WORKING_HOURS'] = list(config.get('ALERT_WORKING_HOURS', []))
+        except TypeError:
+            pass
+        check_assert('ALERT_WORKING_HOURS', [], list, non_empty=True, containing_type=int)
+        ALERT_WORKING_HOURS = config['ALERT_WORKING_HOURS']
+        assert all([not isinstance(i, bool) and i in range(24) for i in ALERT_WORKING_HOURS]), \
+            "Element in ALERT_WORKING_HOURS should be between 0 and 23. Current value: %s" % ALERT_WORKING_HOURS
+
         check_assert('ON_JOB_RUNNING_INTERVAL', 0, int)
         check_assert('ON_JOB_FINISHED', False, bool)
 
-        for k in EMAIL_TRIGGER_KEYS:
+        for k in ALERT_TRIGGER_KEYS:
             check_assert('LOG_%s_THRESHOLD' % k, 0, int)
             check_assert('LOG_%s_TRIGGER_STOP' % k, False, bool)
             check_assert('LOG_%s_TRIGGER_FORCESTOP' % k, False, bool)
 
-        check_email(config)
+        if config.get('ENABLE_SLACK_ALERT', False):
+            check_slack_telegram(config, service='slack')
+        if config.get('ENABLE_TELEGRAM_ALERT', False):
+            check_slack_telegram(config, service='telegram')
+        if config.get('ENABLE_EMAIL_ALERT', False):
+            check_email(config)
 
     # System
     check_assert('DEBUG', False, bool)
@@ -360,28 +378,64 @@ def check_scrapyd_connectivity(servers):
     assert any(results), "None of your SCRAPYD_SERVERS could be connected. "
 
 
+def check_slack_telegram(config, service):
+    if service == 'slack':
+        url = 'https://slack.com/api/chat.postMessage'
+        data = dict(token=config['SLACK_TOKEN'], channel=config['SLACK_CHANNEL'], text='Slack enabled #scrapydweb')
+        alert = "Fail to send text via Slack, you may need to set 'ENABLE_SLACK_ALERT = False'"
+        result = "Slack enabled"
+    else:
+        url = 'https://api.telegram.org/bot%s/getUpdates' % config['TELEGRAM_TOKEN']
+        data = {}
+        alert = ("Fail to send text via Telegram, you may need to initiate/update conversations with your bot "
+                 "or set 'ENABLE_TELEGRAM_ALERT = False'")
+        result = "Telegram enabled"
+    r = None
+    try:
+        r = session.post(url, data=data, timeout=10)
+        js = r.json()
+        assert r.status_code == 200 and js['ok'] == True
+        if service == 'telegram':
+            assert js.get('result', [])
+            url = 'https://api.telegram.org/bot%s/sendMessage' % config['TELEGRAM_TOKEN']
+            data = dict(chat_id=js['result'][-1]['message']['chat']['id'], text='Telegram enabled #scrapydweb')
+            r = None
+            r = session.post(url, data=data, timeout=10)
+            assert r.status_code == 200 and js['ok'] == True
+    except Exception as err:
+        logger.error(err)
+        logger.error("url: %s", url)
+        logger.error("data: %s", data)
+        if r is not None:
+            logger.error("status_code: %s", r.status_code)
+            logger.error("response: %s", r.text)
+        assert False, alert
+    else:
+        logger.info(result)
+
+
 def check_email(config):
     kwargs = dict(
+        email_username=config['EMAIL_USERNAME'],
+        email_password=config['EMAIL_PASSWORD'],
+        from_addr=config['FROM_ADDR'],
+        to_addrs=config['TO_ADDRS'],
         smtp_server=config['SMTP_SERVER'],
         smtp_port=config['SMTP_PORT'],
         smtp_over_ssl=config.get('SMTP_OVER_SSL', False),
         smtp_connection_timeout=config.get('SMTP_CONNECTION_TIMEOUT', 10),
-        email_username=config['EMAIL_USERNAME'],
-        email_password=config['EMAIL_PASSWORD'],
-        from_addr=config['FROM_ADDR'],
-        to_addrs=config['TO_ADDRS']
     )
     kwargs['to_retry'] = True
-    kwargs['subject'] = 'Email notice enabled #scrapydweb'
+    kwargs['subject'] = 'Email enabled #scrapydweb'
     kwargs['content'] = json_dumps(dict(FROM_ADDR=config['FROM_ADDR'], TO_ADDRS=config['TO_ADDRS']))
 
     logger.debug("Trying to send email (smtp_connection_timeout=%s)...", config.get('SMTP_CONNECTION_TIMEOUT', 10))
-    result = send_email(**kwargs)
+    result, reason = send_email(**kwargs)
     if not result and os.environ.get('TEST_ON_CIRCLECI', 'False') == 'False':
         logger.debug("kwargs for send_email():\n%s", json_dumps(kwargs, sort_keys=False))
-    assert result, "Fail to send email. Modify the email settings above or pass in the argument '--disable_email'"
+    assert result, "Fail to send email. Modify the email settings above or set 'ENABLE_EMAIL_ALERT = False'"
 
-    logger.info("Email notice enabled")
+    logger.info("Email enabled")
 
 
 def init_subprocess(config):
@@ -391,7 +445,7 @@ def init_subprocess(config):
         config['LOGPARSER_PID'] = None
     handle_metadata('logparser_pid', config['LOGPARSER_PID'])
 
-    if config.get('ENABLE_EMAIL', False):
+    if config.get('ENABLE_MONITOR', False):
         config['POLL_PID'] = init_poll(config)
     else:
         config['POLL_PID'] = None

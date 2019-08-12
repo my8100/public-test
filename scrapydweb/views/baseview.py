@@ -14,7 +14,7 @@ from ..common import (get_now_string, get_response_from_view, handle_metadata,
                       handle_slash, json_dumps, session)
 from ..vars import (ALLOWED_SCRAPYD_LOG_EXTENSIONS, APSCHEDULER_DATABASE_URI,
                     DATA_PATH, DEMO_PROJECTS_PATH, DEPLOY_PATH, PARSE_PATH,
-                    EMAIL_TRIGGER_KEYS, LEGAL_NAME_PATTERN, SCHEDULE_ADDITIONAL,
+                    ALERT_TRIGGER_KEYS, LEGAL_NAME_PATTERN, SCHEDULE_ADDITIONAL,
                     SCHEDULE_PATH, STATE_PAUSED, STATE_RUNNING, STATS_PATH, STRICT_NAME_PATTERN)
 from ..utils.scheduler import scheduler
 
@@ -37,7 +37,7 @@ class BaseView(View):
     DEFAULT_LATEST_VERSION = 'default: the latest version'
     LEGAL_NAME_PATTERN = LEGAL_NAME_PATTERN
     STRICT_NAME_PATTERN = STRICT_NAME_PATTERN
-    EMAIL_TRIGGER_KEYS = EMAIL_TRIGGER_KEYS
+    ALERT_TRIGGER_KEYS = ALERT_TRIGGER_KEYS
 
     methods = ['GET', 'POST']
 
@@ -63,12 +63,17 @@ class BaseView(View):
         logging.getLogger("requests").setLevel(_level)
         logging.getLogger("urllib3").setLevel(_level)
 
+
+        if app.testing:
+            self.logger.debug('request.url: %s', request.url)
         # if request.view_args:
         #     self.logger.debug('view_args of %s\n%s', request.url, self.json_dumps(request.view_args))
         if request.args:
             self.logger.debug('request.args of %s\n%s', request.url, self.json_dumps(request.args))
         if request.form:
             self.logger.debug('request.form from %s\n%s', request.url, self.json_dumps(request.form))
+        if request.json:
+            self.logger.debug('request.json from %s\n%s', request.url, self.json_dumps(request.json))
         if request.files:
             self.logger.debug('request.files from %s\n\n    %s\n', request.url, request.files)
 
@@ -125,38 +130,49 @@ class BaseView(View):
         self.JOBS_RELOAD_INTERVAL = app.config.get('JOBS_RELOAD_INTERVAL', 300)
         self.DAEMONSTATUS_REFRESH_INTERVAL = app.config.get('DAEMONSTATUS_REFRESH_INTERVAL', 10)
 
-        # Email Notice
-        self.ENABLE_EMAIL = app.config.get('ENABLE_EMAIL', False)
-        self.POLL_ROUND_INTERVAL = app.config.get('POLL_ROUND_INTERVAL', 300)
-        self.POLL_REQUEST_INTERVAL = app.config.get('POLL_REQUEST_INTERVAL', 10)
-        self.SMTP_SERVER = app.config.get('SMTP_SERVER', '')
-        self.SMTP_PORT = app.config.get('SMTP_PORT', 0)
-        self.SMTP_OVER_SSL = app.config.get('SMTP_OVER_SSL', False)
-        self.SMTP_CONNECTION_TIMEOUT = app.config.get('SMTP_CONNECTION_TIMEOUT', 10)
+        # Send text
+        self.SLACK_TOKEN = app.config.get('SLACK_TOKEN', '')
+        self.SLACK_CHANNEL = app.config.get('SLACK_CHANNEL', '') or 'general'
+        self.TELEGRAM_TOKEN = app.config.get('TELEGRAM_TOKEN', '')
+        self.EMAIL_SUBJECT = app.config.get('EMAIL_SUBJECT', '') or 'Email from #scrapydweb'
+
+        # Monitor & Alert
+        self.ENABLE_MONITOR = app.config.get('ENABLE_MONITOR', False)
+        self.ENABLE_SLACK_ALERT = app.config.get('ENABLE_SLACK_ALERT', False)
+        self.ENABLE_TELEGRAM_ALERT = app.config.get('ENABLE_TELEGRAM_ALERT', False)
+        self.ENABLE_EMAIL_ALERT = app.config.get('ENABLE_EMAIL_ALERT', False)
+
         self.FROM_ADDR = app.config.get('FROM_ADDR', '')
         self.TO_ADDRS = app.config.get('TO_ADDRS', [])
         self.EMAIL_USERNAME = app.config.get('EMAIL_USERNAME', '') or self.FROM_ADDR
         self.EMAIL_PASSWORD = app.config.get('EMAIL_PASSWORD', '')
 
+        self.SMTP_SERVER = app.config.get('SMTP_SERVER', '')
+        self.SMTP_PORT = app.config.get('SMTP_PORT', 0)
+        self.SMTP_OVER_SSL = app.config.get('SMTP_OVER_SSL', False)
+        self.SMTP_CONNECTION_TIMEOUT = app.config.get('SMTP_CONNECTION_TIMEOUT', 10)
+
         self.EMAIL_KWARGS = dict(
-            smtp_server=self.SMTP_SERVER,
-            smtp_port=self.SMTP_PORT,
-            smtp_over_ssl=self.SMTP_OVER_SSL,
-            smtp_connection_timeout=self.SMTP_CONNECTION_TIMEOUT,
             email_username=self.EMAIL_USERNAME,
             email_password=self.EMAIL_PASSWORD,
             from_addr=self.FROM_ADDR,
             to_addrs=self.TO_ADDRS,
+            smtp_server=self.SMTP_SERVER,
+            smtp_port=self.SMTP_PORT,
+            smtp_over_ssl=self.SMTP_OVER_SSL,
+            smtp_connection_timeout=self.SMTP_CONNECTION_TIMEOUT,
             subject='subject',
             content='content'
         )
 
-        self.EMAIL_WORKING_DAYS = app.config.get('EMAIL_WORKING_DAYS', [])
-        self.EMAIL_WORKING_HOURS = app.config.get('EMAIL_WORKING_HOURS', [])
+        self.POLL_ROUND_INTERVAL = app.config.get('POLL_ROUND_INTERVAL', 300)
+        self.POLL_REQUEST_INTERVAL = app.config.get('POLL_REQUEST_INTERVAL', 10)
+        self.ALERT_WORKING_DAYS = app.config.get('ALERT_WORKING_DAYS', [])
+        self.ALERT_WORKING_HOURS = app.config.get('ALERT_WORKING_HOURS', [])
         self.ON_JOB_RUNNING_INTERVAL = app.config.get('ON_JOB_RUNNING_INTERVAL', 0)
         self.ON_JOB_FINISHED = app.config.get('ON_JOB_FINISHED', False)
         # ['CRITICAL', 'ERROR', 'WARNING', 'REDIRECT', 'RETRY', 'IGNORE']
-        for key in self.EMAIL_TRIGGER_KEYS:
+        for key in self.ALERT_TRIGGER_KEYS:
             setattr(self, 'LOG_%s_THRESHOLD' % key, app.config.get('LOG_%s_THRESHOLD' % key, 0))
             setattr(self, 'LOG_%s_TRIGGER_STOP' % key, app.config.get('LOG_%s_TRIGGER_STOP' % key, False))
             setattr(self, 'LOG_%s_TRIGGER_FORCESTOP' % key, app.config.get('LOG_%s_TRIGGER_FORCESTOP' % key, False))
@@ -193,7 +209,9 @@ class BaseView(View):
         self.FEATURES += 'A' if self.ENABLE_AUTH else '-'
         self.FEATURES += 'D' if handle_metadata().get('jobs_style') == 'database' else 'C'
         self.FEATURES += 'd' if self.SCRAPY_PROJECTS_DIR != self.DEMO_PROJECTS_PATH else '-'
-        self.FEATURES += 'E' if self.ENABLE_EMAIL else '-'
+        self.FEATURES += 'Sl' if self.ENABLE_SLACK_ALERT else '-'
+        self.FEATURES += 'Tg' if self.ENABLE_TELEGRAM_ALERT else '-'
+        self.FEATURES += 'Em' if self.ENABLE_EMAIL_ALERT else '-'
         self.FEATURES += 'L' if self.ENABLE_LOGPARSER else '-'
         self.FEATURES += 'M' if self.USE_MOBILEUI else '-'
         self.FEATURES += 'P' if self.IS_MOBILE else '-'
@@ -223,9 +241,9 @@ class BaseView(View):
     def get_now_string(allow_space=False):
         return get_now_string(allow_space=allow_space)
 
-    def get_response_from_view(self, url, as_json=False):
+    def get_response_from_view(self, url, data=None, as_json=False):
         auth = (self.USERNAME, self.PASSWORD) if self.ENABLE_AUTH else None
-        return get_response_from_view(url, auth=auth, as_json=as_json)
+        return get_response_from_view(url, auth=auth, data=data, as_json=as_json)
 
     def get_selected_nodes(self):
         selected_nodes = []
@@ -255,7 +273,7 @@ class BaseView(View):
     def remove_microsecond(dt):
         return str(dt)[:19]
 
-    def make_request(self, url, data=None, auth=None, as_json=True, dumps_json=True, timeout=60):
+    def make_request(self, url, data=None, auth=None, as_json=True, dumps_json=True, check_status=True, timeout=60):
         """
         :param url: url to make request
         :param data: None or a dict object to post
@@ -301,11 +319,11 @@ class BaseView(View):
                     # Scrapyd in Python2: Traceback (most recent call last):\\n
                     # Scrapyd in Python3: Traceback (most recent call last):\r\n
                     message = r_json.get('message', '')
-                    if message:
+                    if message and not isinstance(message, dict):
                         r_json['message'] = re.sub(r'\\n', '\n', message)
                     r_json.update(dict(url=url, auth=auth, status_code=r.status_code, when=self.get_now_string(True)))
                     status = r_json.setdefault('status', self.NA)
-                    if r.status_code != 200 or status != self.OK:
+                    if r.status_code != 200 or (check_status and status != self.OK):
                         self.logger.error("!!!!! (%s) %s: %s", r.status_code, status, url)
                     else:
                         self.logger.debug("<<<<< (%s) %s: %s", r.status_code, status, url)

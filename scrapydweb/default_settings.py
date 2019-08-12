@@ -7,6 +7,7 @@ GitHub: https://github.com/my8100/scrapydweb
 DOCS: https://github.com/my8100/files/blob/master/scrapydweb/README.md
 文档：https://github.com/my8100/files/blob/master/scrapydweb/README_CN.md
 """
+import os
 
 
 ############################## QUICK SETUP start ##############################
@@ -174,21 +175,42 @@ JOBS_RELOAD_INTERVAL = 300
 DAEMONSTATUS_REFRESH_INTERVAL = 10
 
 
-############################## Email Notice ###################################
-# In order to be notified (and stop or forcestop a job when triggered) in time,
-# you can reduce the value of POLL_ROUND_INTERVAL and POLL_REQUEST_INTERVAL,
-# at the cost of burdening both CPU and bandwidth of your servers.
+############################## Send text ######################################
+########## slack ##########
+# 'https://api.slack.com/methods/chat.postMessage'
+SLACK_TOKEN = os.environ.get('SLACK_TOKEN', '')
+SLACK_CHANNEL = 'general'
 
-# Tip: set SCRAPYDWEB_BIND to the actual IP of your host, then you can visit ScrapydWeb
-# via the links attached in the email. (check out the "ScrapydWeb" section above)
+########## telegram ##########
+# 'https://core.telegram.org/bots#6-botfather'
+# https://api.telegram.org/botfaketoken/getme
+TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN', '')
 
+########## email ##########
+# The default subject when sending text via email
+EMAIL_SUBJECT = 'Email from #scrapydweb'
+
+########## email sender & recipients ##########
+# Leave this option as '' to default to the FROM_ADDR option below; Otherwise, set it up
+# if your email service provider requires an username which is different from the FROM_ADDR option below to login.
+# e.g. 'username'
+EMAIL_USERNAME = ''
+# As for different email service provider, you might have to get an APP password (like Gmail)
+# or an authorization code (like QQ mail) and set it as the EMAIL_PASSWORD.
+# Check out links below to get more help:
+# https://stackoverflow.com/a/27515833/10517783 How to send an email with Gmail as the provider using Python?
+# https://stackoverflow.com/a/26053352/10517783 Python smtplib proxy support
+# e.g. 'password4gmail'
+EMAIL_PASSWORD = ''
+
+# e.g. 'username@gmail.com'
+FROM_ADDR = ''
+# e.g. ['username@gmail.com', ]
+TO_ADDRS = [FROM_ADDR]
+
+########## email smtp settings ##########
 # Check out this link if you are using ECS of Alibaba Cloud and your SMTP server provides TCP port 25 only:
 # https://www.alibabacloud.com/help/doc-detail/56130.htm
-
-# The default is False, set it to True to enable email notification.
-ENABLE_EMAIL = False
-
-########## smtp settings ##########
 SMTP_SERVER = ''
 SMTP_PORT = 0
 SMTP_OVER_SSL = False
@@ -216,52 +238,51 @@ SMTP_OVER_SSL = False
 # The timeout in seconds for the connection attempt, the default is 10.
 SMTP_CONNECTION_TIMEOUT = 10
 
-########## sender & recipients ##########
-# Leave this option as '' to default to the FROM_ADDR option below; Otherwise, set it up
-# if your email service provider requires an username which is different from the FROM_ADDR option below to login.
-# e.g. 'username'
-EMAIL_USERNAME = ''
-# As for different email service provider, you might have to get an APP password (like Gmail)
-# or an authorization code (like QQ mail) and set it as the EMAIL_PASSWORD.
-# Check out links below to get more help:
-# https://stackoverflow.com/a/27515833/10517783 How to send an email with Gmail as the provider using Python?
-# https://stackoverflow.com/a/26053352/10517783 Python smtplib proxy support
-# e.g. 'password4gmail'
-EMAIL_PASSWORD = ''
 
-# e.g. 'username@gmail.com'
-FROM_ADDR = ''
-# e.g. ['username@gmail.com', ]
-TO_ADDRS = [FROM_ADDR]
-
-########## email working time ##########
-# Monday is 1 and Sunday is 7.
-# e.g, [1, 2, 3, 4, 5, 6, 7]
-EMAIL_WORKING_DAYS = []
-
-# From 0 to 23.
-# e.g. [9] + list(range(15, 18)) >>> [9, 15, 16, 17], or range(24) for 24 hours
-EMAIL_WORKING_HOURS = []
+############################## Monitor & Alert ################################
+ENABLE_MONITOR = False
 
 ########## poll interval ##########
 # Sleep N seconds before starting next round of poll, the default is 300.
 POLL_ROUND_INTERVAL = 300
-
 # Sleep N seconds between each request to the Scrapyd server while polling, the default is 10.
 POLL_REQUEST_INTERVAL = 10
 
+# In order to be notified (and stop or forcestop a job when triggered) in time,
+# you can reduce the value of POLL_ROUND_INTERVAL and POLL_REQUEST_INTERVAL,
+# at the cost of burdening both CPU and bandwidth of your servers.
+
+# Tip: set the SCRAPYDWEB_BIND option the in "QUICK SETUP" section to the actual IP of your host,
+# then you can visit ScrapydWeb via the links attached in the email.
+
+########## alert switcher ##########
+# The default is False, set it to True to enable alert via Slack/Telegram/email.
+# You have to set up your accounts in the "Send text" section above first.
+ENABLE_SLACK_ALERT = False
+ENABLE_TELEGRAM_ALERT = False
+ENABLE_EMAIL_ALERT = False
+
+########## alert working time ##########
+# Monday is 1 and Sunday is 7.
+# e.g, [1, 2, 3, 4, 5, 6, 7]
+ALERT_WORKING_DAYS = []
+
+# From 0 to 23.
+# e.g. [9] + list(range(15, 18)) >>> [9, 15, 16, 17], or range(24) for 24 hours
+ALERT_WORKING_HOURS = []
+
 ########## basic triggers ##########
-# Trigger email notice every N seconds for each running job.
+# Trigger alert every N seconds for each running job.
 # The default is 0, set it to a positive integer to enable this trigger.
 ON_JOB_RUNNING_INTERVAL = 0
 
-# Trigger email notice when a job is finished.
+# Trigger alert when a job is finished.
 # The default is False, set it to True to enable this trigger.
 ON_JOB_FINISHED = False
 
 ########## advanced triggers ##########
 # - LOG_XXX_THRESHOLD:
-#   - Trigger email notice the first time reaching the threshold for a specific kind of log.
+#   - Trigger alert the first time reaching the threshold for a specific kind of log.
 #   - The default is 0, set it to a positive integer to enable this trigger.
 # - LOG_XXX_TRIGGER_STOP (optional):
 #   - The default is False, set it to True to stop current job automatically when reaching the LOG_XXX_THRESHOLD.
@@ -273,8 +294,8 @@ ON_JOB_FINISHED = False
 #   - The SIGTERM signal would be sent twice resulting in an UNCLEAN shutdown, without the Scrapy stats dumped!
 #   - The 'FORCESTOP' action would be executed if both of the 'STOP' and 'FORCESTOP' triggers are enabled.
 
-# Note that the 'STOP' action and the 'FORCESTOP' action would STILL be executed even when the current time
-# is NOT within the EMAIL_WORKING_DAYS and the EMAIL_WORKING_HOURS, though NO email would be sent.
+# Note that the 'STOP' action and the 'FORCESTOP' action would still be executed even when the current time
+# is NOT within the ALERT_WORKING_DAYS and the ALERT_WORKING_HOURS, though no alert would be sent.
 
 LOG_CRITICAL_THRESHOLD = 0
 LOG_CRITICAL_TRIGGER_STOP = False

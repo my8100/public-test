@@ -163,7 +163,7 @@ jobs:
             . venv/bin/activate
             flake8 . --count --exclude=./venv* --select=E9,F63,F7,F82 --show-source --statistics
             coverage erase
-            coverage run --source=scrapydweb -m pytest tests/test_system.py -s -vv -l --disable-warnings -x
+            coverage run --source=scrapydweb -m pytest tests -s -vv -l --disable-warnings -x
 
       - run:
           name: Generate report

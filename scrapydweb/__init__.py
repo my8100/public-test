@@ -143,10 +143,18 @@ def handle_db(app):
 
 
 def handle_route(app):
-    def register_view(view, endpoint, url_defaults_list):
+    def register_view(view, endpoint, url_defaults_list, with_node=True, final_slash=True):
         view_func = view.as_view(endpoint)
         for url, defaults in url_defaults_list:
-            app.add_url_rule('/<int:node>/%s/' % url, defaults=defaults, view_func=view_func)
+            rule = '/<int:node>/%s' % url if with_node else '/%s' % url
+            if final_slash:
+                rule += '/'
+            if not with_node:
+                if defaults:
+                    defaults['node'] = 1
+                else:
+                    defaults = dict(node=1)
+            app.add_url_rule(rule, defaults=defaults, view_func=view_func)
 
     from .views.index import IndexView
     index_view = IndexView.as_view('index')
@@ -266,6 +274,21 @@ def handle_route(app):
     # System
     from .views.system.settings import SettingsView
     register_view(SettingsView, 'settings', [('settings', None)])
+
+    # Send text
+    from .views.utilities.send_text import SendTextView
+    register_view(SendTextView, 'sendtext', [
+        ('email/<subject_channel>/<text>', dict(opt='email')),
+        ('email/<text>', dict(opt='email', subject_channel=None)),
+        ('email', dict(opt='email', subject_channel=None, text=None)),
+        ('slack/<subject_channel>/<text>', dict(opt='slack')),
+        ('slack/<text>', dict(opt='slack', subject_channel=None)),
+        ('slack', dict(opt='slack', subject_channel=None, text=None)),
+        ('telegram/<text>', dict(opt='telegram', subject_channel=None)),
+        ('telegram', dict(opt='telegram', subject_channel=None, text=None)),
+        ('tg/<text>', dict(opt='tg', subject_channel=None)),
+        ('tg', dict(opt='tg', subject_channel=None, text=None)),
+    ], with_node=False, final_slash=False)
 
 
 def handle_template_context(app):

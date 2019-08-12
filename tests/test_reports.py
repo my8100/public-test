@@ -14,7 +14,7 @@ def test_node_reports_pass(app, client):
 
 
 def test_node_reports_fail(app, client):
-    ins = ['<title>fail - ScrapydWeb</title>', '<h3>status_code: -1</h3>']
+    ins = ['<title>fail - ScrapydWeb</title>', '<h3>status_code:']
     req(app, client, view='nodereports', kws=dict(node=2), ins=ins)
     req_single_scrapyd(app, client, view='nodereports', kws=dict(node=1), ins=ins, set_to_second=True)
 

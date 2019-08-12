@@ -156,7 +156,7 @@ class Poll(object):
                     self.logger.critical("GoodBye, exit_timeout: %s", self.exit_timeout)
                     break
                 else:
-                    self.logger.warning("Sleep %s seconds", self.poll_round_interval)
+                    self.logger.warning("Sleeping for %ss", self.poll_round_interval)
                     time.sleep(self.poll_round_interval)
             except KeyboardInterrupt:
                 self.logger.warning("Poll subprocess (pid: %s) cancelled by KeyboardInterrupt", self.poll_pid)
@@ -192,7 +192,7 @@ class Poll(object):
                 finished_jobs = self.update_finished_jobs(node, finished_jobs_set)
                 for job_tuple in running_jobs + finished_jobs:
                     self.fetch_stats(node, job_tuple, finished_jobs)
-                    self.logger.debug("Sleep %s seconds", self.poll_request_interval)
+                    self.logger.debug("Sleeping for %ss", self.poll_request_interval)
                     time.sleep(self.poll_request_interval)
             except KeyboardInterrupt:
                 raise

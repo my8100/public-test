@@ -22,7 +22,7 @@ def test_auto_packaging_select_option(app, client):
         '<div>demo<',
         '<div>demo_only_scrapy_cfg<'
     ]
-    nos = ['<div>demo_without_scrapy_cfg<', '<h3>NO projects found']
+    nos = ['<div>demo_without_scrapy_cfg<', '<h3>No projects found']
     req(app, client, view='deploy', kws=dict(node=2), ins=ins, nos=nos)
 
 

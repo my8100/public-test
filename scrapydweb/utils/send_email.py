@@ -22,28 +22,33 @@ def send_email(**kwargs):
     to_retry = kwargs.get('to_retry', False)
     need_debug = kwargs.get('need_debug', False)
 
-    smtp_server = kwargs['smtp_server']
-    smtp_port = kwargs['smtp_port']
-    smtp_over_ssl = kwargs['smtp_over_ssl']
-    smtp_connection_timeout = kwargs['smtp_connection_timeout']
     email_username = kwargs['email_username']
     email_password = kwargs['email_password']
     from_addr = kwargs['from_addr']
     to_addrs = kwargs['to_addrs']
+    smtp_server = kwargs['smtp_server']
+    smtp_port = kwargs['smtp_port']
+    smtp_over_ssl = kwargs['smtp_over_ssl']
+    smtp_connection_timeout = kwargs['smtp_connection_timeout']
     subject = kwargs['subject']
     content = kwargs['content']
     # https://stackoverflow.com/questions/6921699/can-i-get-json-to-load-into-an-ordereddict/6921760#6921760
     # data = json.loads('{"foo":1, "bar": 2}', object_pairs_hook=OrderedDict)
     # In log.py : ensure_ascii=True
-    content = json.dumps(json.loads(content, object_pairs_hook=OrderedDict),
-                         sort_keys=False, indent=4, ensure_ascii=False)
+    # json.loads('abc') -> JSONDecodeError
+    try:
+        content = json.dumps(json.loads(content, object_pairs_hook=OrderedDict),
+                             sort_keys=False, indent=4, ensure_ascii=False)
+    except ValueError:
+        pass
 
     msg = MIMEText(u'%s\n%s' % (time.ctime(), content), 'plain', 'utf-8')
     msg['From'] = from_addr
     msg['Subject'] = u'{} {}'.format(time.strftime('%H:%M'), subject)
 
-    result = False
     server = None
+    result = False
+    reason = ''
     try:
         if smtp_over_ssl:
             server = smtplib.SMTP_SSL(smtp_server, smtp_port, timeout=smtp_connection_timeout)
@@ -58,18 +63,20 @@ def send_email(**kwargs):
     except Exception as err:
         logger.error("Fail to send email: %s", subject)
         try:
-            logger.info("Fail reason: %s", err.args[-1].decode('utf8'))
+            reason = err.args[-1].decode('utf8')
         except:
             try:
-                logger.info("Fail reason: %s", err.args[-1].decode('gbk'))
+                reason = err.args[-1].decode('gbk')
             except:
-                logger.info("Fail reason: %s", err)
+                reason = str(err)
+        logger.info("Fail reason: %s", reason)
         if to_retry:
             kwargs.update(to_retry=False, need_debug=True)
             logger.debug("Retrying...")
             send_email(**kwargs)
     else:
         result = True
+        reason = "Sent"
         logger.info("Email sent: %s", subject)
     finally:
         if server is not None:
@@ -78,7 +85,7 @@ def send_email(**kwargs):
             except:
                 pass
 
-    return result
+    return result, reason
 
 
 if __name__ == '__main__':
