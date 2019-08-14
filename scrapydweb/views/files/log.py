@@ -509,11 +509,11 @@ class LogView(BaseView):
             )
             if self.ENABLE_SLACK_ALERT:
                 self.logger.info("Sending alert via Slack: %s", subject)
-                _url = url_for('sendtext', opt='slack', channel_chatid_subject=None, text=None)
+                _url = url_for('sendtextapi', opt='slack', channel_chatid_subject=None, text=None)
                 self.get_response_from_view(_url, data=data)
             if self.ENABLE_TELEGRAM_ALERT:
                 self.logger.info("Sending alert via Telegram: %s", subject)
-                _url = url_for('sendtext', opt='telegram', channel_chatid_subject=None, text=None)
+                _url = url_for('sendtextapi', opt='telegram', channel_chatid_subject=None, text=None)
                 self.get_response_from_view(_url, data=data)
             if self.ENABLE_EMAIL_ALERT:
                 self.logger.info("Sending alert via Email: %s", subject)
