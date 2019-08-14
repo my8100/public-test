@@ -175,53 +175,50 @@ JOBS_RELOAD_INTERVAL = 300
 DAEMONSTATUS_REFRESH_INTERVAL = 10
 
 
-############################## Send text ######################################
-########## usage in scrapy project ##########
-"""
-# Remember to add '127.0.0.1' to allowed_domains
-base_url = 'http://127.0.0.1:5000'
-callback_none = lambda x: None
-# Via Slack:
-yield scrapy.Request(base_url+'/slack/some-text-to-channel-general', callback=callback_none)
-yield scrapy.Request(base_url+'/slack/random/send-to-channel-random', callback=callback_none)
-yield scrapy.FormRequest(url=base_url+'/slack',
-                         formdata=dict(channel='random', arg='value', a='1'),
-                         callback=callback_none)
-
-# Via Telegram:
-yield scrapy.Request(base_url+'/tg/some-text-to-telegram', callback=callback_none)
-# JSONRequest is available in Scrapy>=1.7.1
-yield scrapy.http.JSONRequest(url='http://127.0.0.1:5000/tg',
-                              data=dict(arg='value', b=2),
-                              callback=callback_none)
-
-# Via Email:
-yield scrapy.Request(base_url+'/email/some-text-to-email', callback=callback_none)
-yield scrapy.Request(base_url+'/email/new-subject/send-with-new-subject', callback=callback_none)
-yield scrapy.FormRequest(url=base_url+'/email',
-                         formdata=dict(receivers='name1@example.com; name2@example.com',
-                                       subject='post to send an email', arg='value', c='3'),
-                         callback=callback_none)
-"""
+############################## Send Text ######################################
+########## usage in scrapy projects ##########
+# See the "Send Text" page
 
 ########## slack ##########
-# 'https://api.slack.com/methods/chat.postMessage'
+# How to create a slack app:
+# 1. Visit https://api.slack.com/apps and press the "Create New App" button.
+# 2. Enter your App Name (e.g. mybot)and select one of your Slack Workspaces, the press "Create App".
+# 3. Click the "OAuth & Permissions" menu in the sidebar on the left side of the page.
+# 4. Scroll down the page and find out "Select Permission Scopes" in the "Scopes" section
+# 5. Enter "send" and select "Send messages as <your-app-name>", then press "Save Changes"
+# 6. Scroll up the page and press "Install App to Workspace", then press "Install"
+# 7. Copy the "OAuth Access Token", e.g. xoxp-360756836852-462640270103-825806019284-e52dec096408e958b4117fdabedcc5dd
+# See https://api.slack.com/apps for more info
+
+# See step 1~7 above, e.g. xoxp-360756836852-462640270103-825806019284-e52dec096408e958b4117fdabedcc5dd
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN', '')
+# The default channel to use when sending text via slack, e.g. 'general'
 SLACK_CHANNEL = 'general'
 
 ########## telegram ##########
-# 'https://core.telegram.org/bots#6-botfather'
-# Visit https://api.telegram.org/botfaketoken/getme
-# to make sure that the Telegram API is reachable (404 is ok) in your network.
+# How to create a telegram bot:
+# 1. Visit https://telegram.me/botfather to start a conversation with Telegram's bot that creates other bots.
+# 2. Send the /newbot command to create a new bot in a chat with BotFather.
+# 3. Follow the instructions to set up name and username (e.g. my_bot) for your bot.
+# 4. You would get a token (e.g. 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw) after step 3.
+# 5. Visit telegram.me/<bot_username> (e.g. telegram.me/my_bot) and say hi to your bot to initiate a conversation.
+# 6. Visit https://api.telegram.org/bot<token-in-setp-4>/getUpdates to get the chat_id.
+#    (e.g. Visit https://api.telegram.org/bot110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/getUpdates
+#     and you can find the chat_id in "chat":{"id":123456789,...)
+# See https://core.telegram.org/bots#6-botfather for more info
+
+# See step 1~4 above, e.g. '110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw'
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN', '')
+# See step 5~6 above, e.g. 123456789
+TELEGRAM_CHAT_ID = 0
 
 ########## email ##########
-# The default subject when sending text via email.
+# The default subject to use when sending text via email.
 EMAIL_SUBJECT = 'Email from #scrapydweb'
 
 ########## email sender & recipients ##########
-# Leave this option as '' to default to the FROM_ADDR option below; Otherwise, set it up
-# if your email service provider requires an username which is different from the FROM_ADDR option below to login.
+# Leave this option as '' to default to the EMAIL_SENDER option below; Otherwise, set it up
+# if your email service provider requires an username which is different from the EMAIL_SENDER option below to login.
 # e.g. 'username'
 EMAIL_USERNAME = ''
 # As for different email service provider, you might have to get an APP password (like Gmail)
@@ -233,36 +230,20 @@ EMAIL_USERNAME = ''
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 
 # e.g. 'username@gmail.com'
-FROM_ADDR = ''
+EMAIL_SENDER = ''
 # e.g. ['username@gmail.com', ]
-TO_ADDRS = [FROM_ADDR]
+EMAIL_RECIPIENTS = [EMAIL_SENDER]
 
 ########## email smtp settings ##########
 # Check out this link if you are using ECS of Alibaba Cloud and your SMTP server provides TCP port 25 only:
 # https://www.alibabacloud.com/help/doc-detail/56130.htm
+# Config for https://mail.google.com using SSL: ('smtp.gmail.com', 465, True)
+# Config for https://mail.google.com:           ('smtp.gmail.com', 587, False)
+# Config for https://mail.qq.com using SSL:     ('smtp.qq.com', 465, True)
+# Config for http://mail.10086.cn:              ('smtp.139.com', 25, False)
 SMTP_SERVER = ''
 SMTP_PORT = 0
 SMTP_OVER_SSL = False
-
-# Config for https://mail.google.com using SSL
-# SMTP_SERVER = 'smtp.gmail.com'
-# SMTP_PORT = 465
-# SMTP_OVER_SSL = True
-
-# Config for https://mail.google.com
-# SMTP_SERVER = 'smtp.gmail.com'
-# SMTP_PORT = 587
-# SMTP_OVER_SSL = False
-
-# Config for https://mail.qq.com/ using SSL
-# SMTP_SERVER = 'smtp.qq.com'
-# SMTP_PORT = 465
-# SMTP_OVER_SSL = True
-
-# Config for http://mail.10086.cn/
-# SMTP_SERVER = 'smtp.139.com'
-# SMTP_PORT = 25
-# SMTP_OVER_SSL = False
 
 # The timeout in seconds for the connection attempt, the default is 10.
 SMTP_CONNECTION_TIMEOUT = 10

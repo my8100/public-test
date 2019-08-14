@@ -82,8 +82,8 @@ def test_check_email_with_fake_account(app):
 
         app.config['EMAIL_USERNAME'] = 'username@qq.com'
         app.config['EMAIL_PASSWORD'] = 'password'
-        app.config['FROM_ADDR'] = 'username@qq.com'
-        app.config['TO_ADDRS'] = ['username@qq.com']
+        app.config['EMAIL_SENDER'] = 'username@qq.com'
+        app.config['EMAIL_RECIPIENTS'] = ['username@qq.com']
         try:
             check_email(app.config)
         except AssertionError:
@@ -97,8 +97,8 @@ def test_check_email_with_ssl_false(app):
 
         app.config['EMAIL_USERNAME'] = app.config['EMAIL_USERNAME_']
         app.config['EMAIL_PASSWORD'] = app.config['EMAIL_PASSWORD_']
-        app.config['FROM_ADDR'] = app.config['FROM_ADDR_']
-        app.config['TO_ADDRS'] = app.config['TO_ADDRS_']
+        app.config['EMAIL_SENDER'] = app.config['EMAIL_SENDER_']
+        app.config['EMAIL_RECIPIENTS'] = app.config['EMAIL_RECIPIENTS_']
         app.config['SMTP_SERVER'] = app.config['SMTP_SERVER_']
         app.config['SMTP_PORT'] = app.config['SMTP_PORT_']
         app.config['SMTP_OVER_SSL'] = app.config['SMTP_OVER_SSL_']
@@ -112,4 +112,4 @@ def test_scrapyd_group(app, client):
 
 
 def test_scrapyd_auth(app, client):
-    req(app, client, view='settings', kws=dict(node=1), ins='**erna**:**sswo**')  # ('username', 'password')
+    req(app, client, view='settings', kws=dict(node=1), ins='u*e*n*m*:p*s*w*r*')  # ('username', 'password')

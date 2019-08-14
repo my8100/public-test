@@ -33,16 +33,12 @@ class SettingsView(BaseView):
         if not isinstance(string, str):
             return string
         length = len(string)
-        if length == 0:
-            return string
-        elif length < 3:
-            return re.sub(r'^.', '*', string)
-        elif length < 7:
-            return re.sub(r'^.(.*?).$', r'*\1*', string)
-        elif length < 10:
-            return re.sub(r'^..(.*?)..$', r'**\1**', string)
+        if length < 4:
+            return '*' * length
+        elif length < 12:
+            return ''.join([string[i] if not i%2 else '*' for i in range(0, length)])
         else:
-            return re.sub(r'^...(.*?)...$', r'***\1***', string)
+            return re.sub(r'^.{4}(.*?).{4}$', r'****\1****', string)
 
     @staticmethod
     def hide_account(string):
@@ -123,21 +119,22 @@ class SettingsView(BaseView):
         ))
         self.kwargs['telegram_details'] = self.json_dumps(dict(
             TELEGRAM_TOKEN=self.protect(self.TELEGRAM_TOKEN),
+            TELEGRAM_CHAT_ID=self.TELEGRAM_CHAT_ID
         ))
         self.kwargs['email_details'] = self.json_dumps(dict(
             EMAIL_SUBJECT=self.EMAIL_SUBJECT,
+        ))
+        self.kwargs['email_sender_recipients'] = self.json_dumps(dict(
+            EMAIL_USERNAME=self.EMAIL_USERNAME,
+            EMAIL_PASSWORD=self.protect(self.EMAIL_PASSWORD),
+            EMAIL_SENDER=self.EMAIL_SENDER,
+            EMAIL_RECIPIENTS=self.EMAIL_RECIPIENTS
         ))
         self.kwargs['email_smtp_settings'] = self.json_dumps(dict(
             SMTP_SERVER=self.SMTP_SERVER,
             SMTP_PORT=self.SMTP_PORT,
             SMTP_OVER_SSL=self.SMTP_OVER_SSL,
             SMTP_CONNECTION_TIMEOUT=self.SMTP_CONNECTION_TIMEOUT,
-            EMAIL_USERNAME=self.EMAIL_USERNAME,
-            EMAIL_PASSWORD=self.protect(self.EMAIL_PASSWORD),
-        ))
-        self.kwargs['email_sender_recipients'] = self.json_dumps(dict(
-            FROM_ADDR=self.FROM_ADDR,
-            TO_ADDRS=self.TO_ADDRS
         ))
 
 

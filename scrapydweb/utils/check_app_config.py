@@ -191,26 +191,28 @@ def check_app_config(config):
     check_assert('DAEMONSTATUS_REFRESH_INTERVAL', 10, int)
 
     # Send text
-    check_assert('SLACK_TOKEN', '', str, non_empty=True)
+    check_assert('SLACK_TOKEN', '', str)
     check_assert('SLACK_CHANNEL', '', str)
     config['SLACK_CHANNEL'] = config['SLACK_CHANNEL'] or 'general'
 
     check_assert('TELEGRAM_TOKEN', '', str)
+    check_assert('TELEGRAM_CHAT_ID', 0, int)
 
-    if config.get('EMAIL_PASSWORD', None) is not None:
+    if config.get('EMAIL_PASSWORD', ''):
         check_assert('EMAIL_SUBJECT', '', str)
-        check_assert('EMAIL_USERNAME', '', str)  # '' to default to config['FROM_ADDR']
+        check_assert('EMAIL_USERNAME', '', str)  # '' to default to config['EMAIL_SENDER']
         check_assert('EMAIL_PASSWORD', '', str, non_empty=True)
-        check_assert('FROM_ADDR', '', str, non_empty=True)
-        FROM_ADDR = config['FROM_ADDR']
-        assert re.search(EMAIL_PATTERN, FROM_ADDR), \
-            "FROM_ADDR should contain '@', like 'username@gmail.com'. Current value: %s" % FROM_ADDR
-        check_assert('TO_ADDRS', [], list, non_empty=True, containing_type=str)
-        TO_ADDRS = config['TO_ADDRS']
-        assert all([re.search(EMAIL_PATTERN, i) for i in TO_ADDRS]), \
-            "All elements in TO_ADDRS should contain '@', like 'username@gmail.com'. Current value: %s" % TO_ADDRS
+        check_assert('EMAIL_SENDER', '', str, non_empty=True)
+        EMAIL_SENDER = config['EMAIL_SENDER']
+        assert re.search(EMAIL_PATTERN, EMAIL_SENDER), \
+            "EMAIL_SENDER should contain '@', like 'username@gmail.com'. Current value: %s" % EMAIL_SENDER
+        check_assert('EMAIL_RECIPIENTS', [], list, non_empty=True, containing_type=str)
+        EMAIL_RECIPIENTS = config['EMAIL_RECIPIENTS']
+        assert all([re.search(EMAIL_PATTERN, i) for i in EMAIL_RECIPIENTS]), \
+            ("All elements in EMAIL_RECIPIENTS should contain '@', like 'username@gmail.com'. "
+             "Current value: %s") % EMAIL_RECIPIENTS
         if not config.get('EMAIL_USERNAME', ''):
-            config['EMAIL_USERNAME'] = config['FROM_ADDR']
+            config['EMAIL_USERNAME'] = config['EMAIL_SENDER']
 
         check_assert('SMTP_SERVER', '', str, non_empty=True)
         check_assert('SMTP_PORT', 0, int, allow_zero=False)
@@ -220,12 +222,12 @@ def check_app_config(config):
     # Monitor & Alert
     check_assert('ENABLE_MONITOR', False, bool)
     if config.get('ENABLE_MONITOR', False):
+        check_assert('POLL_ROUND_INTERVAL', 300, int, allow_zero=False)
+        check_assert('POLL_REQUEST_INTERVAL', 10, int, allow_zero=False)
+
         check_assert('ENABLE_SLACK_ALERT', False, bool)
         check_assert('ENABLE_TELEGRAM_ALERT', False, bool)
         check_assert('ENABLE_EMAIL_ALERT', False, bool)
-
-        check_assert('POLL_ROUND_INTERVAL', 300, int, allow_zero=False)
-        check_assert('POLL_REQUEST_INTERVAL', 10, int, allow_zero=False)
 
         # For compatibility with Python 3 using range()
         try:
@@ -255,10 +257,14 @@ def check_app_config(config):
             check_assert('LOG_%s_TRIGGER_FORCESTOP' % k, False, bool)
 
         if config.get('ENABLE_SLACK_ALERT', False):
+            check_assert('SLACK_TOKEN', '', str, non_empty=True)
             check_slack_telegram(config, service='slack')
         if config.get('ENABLE_TELEGRAM_ALERT', False):
+            check_assert('TELEGRAM_TOKEN', '', str, non_empty=True)
+            check_assert('TELEGRAM_CHAT_ID', 0, int, allow_zero=False)
             check_slack_telegram(config, service='telegram')
         if config.get('ENABLE_EMAIL_ALERT', False):
+            check_assert('EMAIL_PASSWORD', '', str, non_empty=True)
             check_email(config)
 
     # System
@@ -379,31 +385,21 @@ def check_scrapyd_connectivity(servers):
 
 
 def check_slack_telegram(config, service):
+    logger.debug("Trying to send %s..." % service)
+    text = '%s alert enabled #scrapydweb' % service.capitalize()
+    alert = "Fail to send text via %s, you may need to set 'ENABLE_%s_ALERT = False'" % (
+        service.capitalize(), service.upper())
     if service == 'slack':
-        logger.debug("Trying to send slack...")
         url = 'https://slack.com/api/chat.postMessage'
-        text = 'Slack alert enabled #scrapydweb'
         data = dict(token=config['SLACK_TOKEN'], channel=config['SLACK_CHANNEL'], text=text)
-        alert = "Fail to send text via Slack, you may need to set 'ENABLE_SLACK_ALERT = False'"
     else:
-        logger.debug("Trying to send telegram...")
-        url = 'https://api.telegram.org/bot%s/getUpdates' % config['TELEGRAM_TOKEN']
-        text = 'Telegram alert enabled #scrapydweb'
-        data = {}
-        alert = ("Fail to send text via Telegram, you may need to initiate/update conversations with your bot "
-                 "or set 'ENABLE_TELEGRAM_ALERT = False'")
+        url = 'https://api.telegram.org/bot%s/sendMessage' % config['TELEGRAM_TOKEN']
+        data = dict(chat_id=config['TELEGRAM_CHAT_ID'], text=text)
     r = None
     try:
-        r = session.post(url, data=data, timeout=10)
+        r = session.post(url, data=data, timeout=20)
         js = r.json()
-        assert r.status_code == 200 and js['ok'] == True
-        if service == 'telegram':
-            assert js.get('result', [])
-            url = 'https://api.telegram.org/bot%s/sendMessage' % config['TELEGRAM_TOKEN']
-            data = dict(chat_id=js['result'][-1]['message']['chat']['id'], text=text)
-            r = None
-            r = session.post(url, data=data, timeout=10)
-            assert r.status_code == 200 and js['ok'] == True
+        assert r.status_code == 200 and js['ok'] is True
     except Exception as err:
         logger.error(err)
         logger.error("url: %s", url)
@@ -420,8 +416,8 @@ def check_email(config):
     kwargs = dict(
         email_username=config['EMAIL_USERNAME'],
         email_password=config['EMAIL_PASSWORD'],
-        from_addr=config['FROM_ADDR'],
-        to_addrs=config['TO_ADDRS'],
+        email_sender=config['EMAIL_SENDER'],
+        email_recipients=config['EMAIL_RECIPIENTS'],
         smtp_server=config['SMTP_SERVER'],
         smtp_port=config['SMTP_PORT'],
         smtp_over_ssl=config.get('SMTP_OVER_SSL', False),
@@ -429,7 +425,8 @@ def check_email(config):
     )
     kwargs['to_retry'] = True
     kwargs['subject'] = 'Email alert enabled #scrapydweb'
-    kwargs['content'] = json_dumps(dict(FROM_ADDR=config['FROM_ADDR'], TO_ADDRS=config['TO_ADDRS']))
+    kwargs['content'] = json_dumps(dict(EMAIL_SENDER=config['EMAIL_SENDER'],
+                                        EMAIL_RECIPIENTS=config['EMAIL_RECIPIENTS']))
 
     logger.debug("Trying to send email (smtp_connection_timeout=%s)...", config.get('SMTP_CONNECTION_TIMEOUT', 10))
     result, reason = send_email(**kwargs)

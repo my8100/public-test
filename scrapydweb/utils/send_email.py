@@ -24,8 +24,8 @@ def send_email(**kwargs):
 
     email_username = kwargs['email_username']
     email_password = kwargs['email_password']
-    from_addr = kwargs['from_addr']
-    to_addrs = kwargs['to_addrs']
+    email_sender = kwargs['email_sender']
+    email_recipients = kwargs['email_recipients']
     smtp_server = kwargs['smtp_server']
     smtp_port = kwargs['smtp_port']
     smtp_over_ssl = kwargs['smtp_over_ssl']
@@ -43,7 +43,7 @@ def send_email(**kwargs):
         pass
 
     msg = MIMEText(u'%s\n%s' % (time.ctime(), content), 'plain', 'utf-8')
-    msg['From'] = from_addr
+    msg['From'] = email_sender
     msg['Subject'] = u'{} {}'.format(time.strftime('%H:%M'), subject)
 
     server = None
@@ -59,7 +59,7 @@ def send_email(**kwargs):
         if need_debug:
             server.set_debuglevel(1)  # For debug
         server.login(email_username, email_password)
-        server.sendmail(from_addr, to_addrs, msg.as_string())
+        server.sendmail(email_sender, email_recipients, msg.as_string())
     except Exception as err:
         logger.error("Fail to send email: %s", subject)
         try:

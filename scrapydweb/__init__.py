@@ -264,31 +264,35 @@ def handle_route(app):
         ('projects', dict(opt='listprojects', project=None, version_spider_job=None))
     ])
 
-    from .views.files.parse import UploadLogView, UploadedLogView
+    # Parse Log
+    from .views.utilities.parse import UploadLogView, UploadedLogView
     register_view(UploadLogView, 'parse.upload', [('parse/upload', None)])
     register_view(UploadedLogView, 'parse.uploaded', [('parse/uploaded/<filename>', None)])
 
-    from .views.files.parse import bp as bp_parse_source
+    from .views.utilities.parse import bp as bp_parse_source
     app.register_blueprint(bp_parse_source)
+
+    # Send text
+    from .views.utilities.send_text import SendTextView, SendTextApiView
+    register_view(SendTextView, 'sendtext', [('sendtext', None)])
+    register_view(SendTextApiView, 'sendtextapi', [
+        ('slack/<channel_chatid_subject>/<text>', dict(opt='slack')),
+        ('slack/<text>', dict(opt='slack', channel_chatid_subject=None)),
+        ('slack', dict(opt='slack', channel_chatid_subject=None, text=None)),
+        ('telegram/<channel_chatid_subject>/<text>', dict(opt='telegram')),
+        ('telegram/<text>', dict(opt='telegram', channel_chatid_subject=None)),
+        ('telegram', dict(opt='telegram', channel_chatid_subject=None, text=None)),
+        ('tg/<channel_chatid_subject>/<text>', dict(opt='tg')),
+        ('tg/<text>', dict(opt='tg', channel_chatid_subject=None)),
+        ('tg', dict(opt='tg', channel_chatid_subject=None, text=None)),
+        ('email/<channel_chatid_subject>/<text>', dict(opt='email')),
+        ('email/<text>', dict(opt='email', channel_chatid_subject=None)),
+        ('email', dict(opt='email', channel_chatid_subject=None, text=None)),
+    ], with_node=False, final_slash=False)
 
     # System
     from .views.system.settings import SettingsView
     register_view(SettingsView, 'settings', [('settings', None)])
-
-    # Send text
-    from .views.utilities.send_text import SendTextView
-    register_view(SendTextView, 'sendtext', [
-        ('email/<subject_channel>/<text>', dict(opt='email')),
-        ('email/<text>', dict(opt='email', subject_channel=None)),
-        ('email', dict(opt='email', subject_channel=None, text=None)),
-        ('slack/<subject_channel>/<text>', dict(opt='slack')),
-        ('slack/<text>', dict(opt='slack', subject_channel=None)),
-        ('slack', dict(opt='slack', subject_channel=None, text=None)),
-        ('telegram/<text>', dict(opt='telegram', subject_channel=None)),
-        ('telegram', dict(opt='telegram', subject_channel=None, text=None)),
-        ('tg/<text>', dict(opt='tg', subject_channel=None)),
-        ('tg', dict(opt='tg', subject_channel=None, text=None)),
-    ], with_node=False, final_slash=False)
 
 
 def handle_template_context(app):

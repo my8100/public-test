@@ -20,24 +20,25 @@ custom_settings = dict(
 
     SLACK_TOKEN=os.environ.get('SLACK_TOKEN', ''),
     TELEGRAM_TOKEN=os.environ.get('TELEGRAM_TOKEN', ''),
+    TELEGRAM_CHAT_ID=int(os.environ.get('TELEGRAM_CHAT_ID', 0)),
 
     EMAIL_USERNAME=os.environ.get('EMAIL_USERNAME', 'username@qq.com'),
     EMAIL_PASSWORD=os.environ.get('EMAIL_PASSWORD', ''),  # Whether to test email
-    FROM_ADDR=os.environ.get('FROM_ADDR', 'username@qq.com'),
-    TO_ADDRS=[os.environ.get('TO_ADDRS', 'username@qq.com')],
+    EMAIL_SENDER=os.environ.get('EMAIL_SENDER', 'username@qq.com'),
+    EMAIL_RECIPIENTS=[os.environ.get('EMAIL_RECIPIENT', 'username@qq.com')],
     SMTP_SERVER='smtp.qq.com',
     SMTP_PORT=465,
     SMTP_OVER_SSL=True,
-    SMTP_CONNECTION_TIMEOUT=30,
+    SMTP_CONNECTION_TIMEOUT=60,
 
     EMAIL_USERNAME_=os.environ.get('EMAIL_USERNAME_', 'username@139.com'),
     EMAIL_PASSWORD_=os.environ.get('EMAIL_PASSWORD_', ''),  # Used in test_check_email_with_ssl_false()
-    FROM_ADDR_=os.environ.get('FROM_ADDR_', 'username@139.com'),
-    TO_ADDRS_=[os.environ.get('TO_ADDRS_', 'username@139.com')],
+    EMAIL_SENDER_=os.environ.get('EMAIL_SENDER_', 'username@139.com'),
+    EMAIL_RECIPIENTS_=[os.environ.get('EMAIL_RECIPIENT_', 'username@139.com')],
     SMTP_SERVER_=os.environ.get('SMTP_SERVER_', 'smtp.139.com'),  
     SMTP_PORT_=25,
     SMTP_OVER_SSL_=False,
-    SMTP_CONNECTION_TIMEOUT_=30,
+    SMTP_CONNECTION_TIMEOUT_=60,
     
     ENABLE_MONITOR=os.environ.get('ENABLE_MONITOR', 'True') == 'True',
     ENABLE_SLACK_ALERT=os.environ.get('ENABLE_SLACK_ALERT', 'True') == 'True',

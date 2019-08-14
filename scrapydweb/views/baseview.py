@@ -63,11 +63,8 @@ class BaseView(View):
         logging.getLogger("requests").setLevel(_level)
         logging.getLogger("urllib3").setLevel(_level)
 
-
         if app.testing:
-            self.logger.debug('request.url: %s', request.url)
-        # if request.view_args:
-        #     self.logger.debug('view_args of %s\n%s', request.url, self.json_dumps(request.view_args))
+            self.logger.debug('view_args of %s\n%s', request.url, self.json_dumps(request.view_args))
         if request.args:
             self.logger.debug('request.args of %s\n%s', request.url, self.json_dumps(request.args))
         if request.form:
@@ -134,6 +131,7 @@ class BaseView(View):
         self.SLACK_TOKEN = app.config.get('SLACK_TOKEN', '')
         self.SLACK_CHANNEL = app.config.get('SLACK_CHANNEL', '') or 'general'
         self.TELEGRAM_TOKEN = app.config.get('TELEGRAM_TOKEN', '')
+        self.TELEGRAM_CHAT_ID = app.config.get('TELEGRAM_CHAT_ID', 0)
         self.EMAIL_SUBJECT = app.config.get('EMAIL_SUBJECT', '') or 'Email from #scrapydweb'
 
         # Monitor & Alert
@@ -142,9 +140,9 @@ class BaseView(View):
         self.ENABLE_TELEGRAM_ALERT = app.config.get('ENABLE_TELEGRAM_ALERT', False)
         self.ENABLE_EMAIL_ALERT = app.config.get('ENABLE_EMAIL_ALERT', False)
 
-        self.FROM_ADDR = app.config.get('FROM_ADDR', '')
-        self.TO_ADDRS = app.config.get('TO_ADDRS', [])
-        self.EMAIL_USERNAME = app.config.get('EMAIL_USERNAME', '') or self.FROM_ADDR
+        self.EMAIL_SENDER = app.config.get('EMAIL_SENDER', '')
+        self.EMAIL_RECIPIENTS = app.config.get('EMAIL_RECIPIENTS', [])
+        self.EMAIL_USERNAME = app.config.get('EMAIL_USERNAME', '') or self.EMAIL_SENDER
         self.EMAIL_PASSWORD = app.config.get('EMAIL_PASSWORD', '')
 
         self.SMTP_SERVER = app.config.get('SMTP_SERVER', '')
@@ -155,8 +153,8 @@ class BaseView(View):
         self.EMAIL_KWARGS = dict(
             email_username=self.EMAIL_USERNAME,
             email_password=self.EMAIL_PASSWORD,
-            from_addr=self.FROM_ADDR,
-            to_addrs=self.TO_ADDRS,
+            email_sender=self.EMAIL_SENDER,
+            email_recipients=self.EMAIL_RECIPIENTS,
             smtp_server=self.SMTP_SERVER,
             smtp_port=self.SMTP_PORT,
             smtp_over_ssl=self.SMTP_OVER_SSL,
@@ -209,12 +207,12 @@ class BaseView(View):
         self.FEATURES += 'A' if self.ENABLE_AUTH else '-'
         self.FEATURES += 'D' if handle_metadata().get('jobs_style') == 'database' else 'C'
         self.FEATURES += 'd' if self.SCRAPY_PROJECTS_DIR != self.DEMO_PROJECTS_PATH else '-'
+        self.FEATURES += 'L' if self.ENABLE_LOGPARSER else '-'
         self.FEATURES += 'Sl' if self.ENABLE_SLACK_ALERT else '-'
         self.FEATURES += 'Tg' if self.ENABLE_TELEGRAM_ALERT else '-'
         self.FEATURES += 'Em' if self.ENABLE_EMAIL_ALERT else '-'
-        self.FEATURES += 'L' if self.ENABLE_LOGPARSER else '-'
-        self.FEATURES += 'M' if self.USE_MOBILEUI else '-'
         self.FEATURES += 'P' if self.IS_MOBILE else '-'
+        self.FEATURES += 'M' if self.USE_MOBILEUI else '-'
         self.FEATURES += 'S' if self.ENABLE_HTTPS else '-'
         self.any_running_apscheduler_jobs = any(job.next_run_time
                                                 for job in self.scheduler.get_jobs(jobstore='default'))
@@ -277,10 +275,11 @@ class BaseView(View):
         """
         :param url: url to make request
         :param data: None or a dict object to post
-        :param timeout: timeout when making request, in seconds
-        :param as_json: return a dict object if set True, else text
         :param auth: None or (username, password) for basic auth
+        :param as_json: return a dict object if set True, else text
         :param dumps_json: whether to dumps the json response when as_json is set to True
+        :param check_status: whether to log error when status != 'ok'
+        :param timeout: timeout when making request, in seconds
         """
         try:
             if 'addversion.json' in url and data:
@@ -360,15 +359,16 @@ class BaseView(View):
             g.url_menu_deploy = url_for('deploy', node=self.node)
             g.url_menu_schedule = url_for('schedule', node=self.node)
             g.url_menu_projects = url_for('projects', node=self.node)
-            g.url_menu_items = url_for('items', node=self.node)
             g.url_menu_logs = url_for('logs', node=self.node)
+            g.url_menu_items = url_for('items', node=self.node)
+            g.url_menu_sendtext = url_for('sendtext', node=self.node)
             g.url_menu_parse = url_for('parse.upload', node=self.node)
             g.url_menu_settings = url_for('settings', node=self.node)
             g.url_menu_mobileui = url_for('index', node=self.node, ui='mobile')
             g.scheduler_state_paused = self.scheduler.state == STATE_PAUSED and self.any_running_apscheduler_jobs
             g.scheduler_state_running = self.scheduler.state == STATE_RUNNING and self.any_running_apscheduler_jobs
 
-    # Issue #48 [PY2] UnicodeDecodeError raised when there are some files with illegal filenames in `SCRAPY_PROJECTS_DIR`
+    # Issue#48 [PY2] UnicodeDecodeError raised when there are some files with illegal filenames in `SCRAPY_PROJECTS_DIR`
     # https://stackoverflow.com/questions/21772271/unicodedecodeerror-when-performing-os-walk
     # https://xuanwo.io/2018/04/01/python-os-walk/
     # Tested in Ubuntu:
