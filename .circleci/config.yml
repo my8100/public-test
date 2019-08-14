@@ -277,24 +277,5 @@ workflows:
     jobs:
       - py27:
           is-py27: true
-      - py27-sqlite:
-          is-py27: true
-          set-data-path: true
-          use-sqlite: true
-      - py27-postgresql:
-          is-py27: true
-          use-postgresql: true
-      - py27-mysql:
-          is-py27: true
-          use-mysql: true
-
       - py37
-      - py36-sqlite:
-          set-data-path: true
-          use-sqlite: true
-      - py37-git-postgresql:
-          use-git: true
-          use-postgresql: true
-      - py37-git-mysql:
-          use-git: true
-          use-mysql: true
+
