@@ -63,8 +63,8 @@ class BaseView(View):
         logging.getLogger("requests").setLevel(_level)
         logging.getLogger("urllib3").setLevel(_level)
 
-        if app.testing:
-            self.logger.debug('view_args of %s\n%s', request.url, self.json_dumps(request.view_args))
+        # if app.testing:
+        self.logger.debug('view_args of %s\n%s', request.url, self.json_dumps(request.view_args))
         if request.args:
             self.logger.debug('request.args of %s\n%s', request.url, self.json_dumps(request.args))
         if request.form:
