@@ -182,15 +182,15 @@ DAEMONSTATUS_REFRESH_INTERVAL = 10
 ########## slack ##########
 # How to create a slack app:
 # 1. Visit https://api.slack.com/apps and press the "Create New App" button.
-# 2. Enter your App Name (e.g. mybot)and select one of your Slack Workspaces, the press "Create App".
+# 2. Enter your App Name (e.g. myapp)and select one of your Slack Workspaces, the press "Create App".
 # 3. Click the "OAuth & Permissions" menu in the sidebar on the left side of the page.
 # 4. Scroll down the page and find out "Select Permission Scopes" in the "Scopes" section
 # 5. Enter "send" and select "Send messages as <your-app-name>", then press "Save Changes"
 # 6. Scroll up the page and press "Install App to Workspace", then press "Install"
-# 7. Copy the "OAuth Access Token", e.g. xoxp-360756836852-462640270103-825806019284-e52dec096408e958b4117fdabedcc5dd
+# 7. Copy the "OAuth Access Token", e.g. xoxp-123-456-789-abcde
 # See https://api.slack.com/apps for more info
 
-# See step 1~7 above, e.g. xoxp-360756836852-462640270103-825806019284-e52dec096408e958b4117fdabedcc5dd
+# See step 1~7 above, e.g. 'xoxp-123-456-789-abcde'
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN', '')
 # The default channel to use when sending text via slack, e.g. 'general'
 SLACK_CHANNEL = 'general'
@@ -200,17 +200,17 @@ SLACK_CHANNEL = 'general'
 # 1. Visit https://telegram.me/botfather to start a conversation with Telegram's bot that creates other bots.
 # 2. Send the /newbot command to create a new bot in a chat with BotFather.
 # 3. Follow the instructions to set up name and username (e.g. my_bot) for your bot.
-# 4. You would get a token (e.g. 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw) after step 3.
+# 4. You would get a token (e.g. 123:abcde) after step 3.
 # 5. Visit telegram.me/<bot_username> (e.g. telegram.me/my_bot) and say hi to your bot to initiate a conversation.
 # 6. Visit https://api.telegram.org/bot<token-in-setp-4>/getUpdates to get the chat_id.
-#    (e.g. Visit https://api.telegram.org/bot110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/getUpdates
+#    (e.g. Visit https://api.telegram.org/bot123:abcde/getUpdates
 #     and you can find the chat_id in "chat":{"id":123456789,...)
 # See https://core.telegram.org/bots#6-botfather for more info
 
-# See step 1~4 above, e.g. '110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw'
+# See step 1~4 above, e.g. '123:abcde'
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN', '')
 # See step 5~6 above, e.g. 123456789
-TELEGRAM_CHAT_ID = 0
+TELEGRAM_CHAT_ID = int(os.environ.get('TELEGRAM_CHAT_ID', 0))
 
 ########## email ##########
 # The default subject to use when sending text via email.
@@ -244,9 +244,8 @@ EMAIL_RECIPIENTS = [EMAIL_SENDER]
 SMTP_SERVER = ''
 SMTP_PORT = 0
 SMTP_OVER_SSL = False
-
-# The timeout in seconds for the connection attempt, the default is 10.
-SMTP_CONNECTION_TIMEOUT = 10
+# The timeout in seconds for the connection attempt, the default is 30.
+SMTP_CONNECTION_TIMEOUT = 30
 
 
 ############################## Monitor & Alert ################################

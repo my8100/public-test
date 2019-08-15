@@ -148,7 +148,7 @@ class BaseView(View):
         self.SMTP_SERVER = app.config.get('SMTP_SERVER', '')
         self.SMTP_PORT = app.config.get('SMTP_PORT', 0)
         self.SMTP_OVER_SSL = app.config.get('SMTP_OVER_SSL', False)
-        self.SMTP_CONNECTION_TIMEOUT = app.config.get('SMTP_CONNECTION_TIMEOUT', 10)
+        self.SMTP_CONNECTION_TIMEOUT = app.config.get('SMTP_CONNECTION_TIMEOUT', 30)
 
         self.EMAIL_KWARGS = dict(
             email_username=self.EMAIL_USERNAME,
@@ -348,6 +348,9 @@ class BaseView(View):
         g.IS_MOBILE = self.IS_MOBILE
         g.url_jobs_list = [url_for('jobs', node=node, ui=self.UI)
                            for node in range(1, self.SCRAPYD_SERVERS_AMOUNT + 1)]
+        g.multinode = ('<label title="multinode">'
+                       '<svg class="icon" aria-hidden="true"><use xlink:href="#icon-servers"></use></svg>'
+                       '</label>')
         # For base.html
         if not self.USE_MOBILEUI:
             g.url_daemonstatus = url_for('api', node=self.node, opt='daemonstatus')

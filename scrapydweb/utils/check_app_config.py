@@ -198,10 +198,11 @@ def check_app_config(config):
     check_assert('TELEGRAM_TOKEN', '', str)
     check_assert('TELEGRAM_CHAT_ID', 0, int)
 
+    check_assert('EMAIL_PASSWORD', '', str)
     if config.get('EMAIL_PASSWORD', ''):
         check_assert('EMAIL_SUBJECT', '', str)
-        check_assert('EMAIL_USERNAME', '', str)  # '' to default to config['EMAIL_SENDER']
-        check_assert('EMAIL_PASSWORD', '', str, non_empty=True)
+        check_assert('EMAIL_USERNAME', '', str)  # '' would default to config['EMAIL_SENDER']
+        # check_assert('EMAIL_PASSWORD', '', str, non_empty=True)
         check_assert('EMAIL_SENDER', '', str, non_empty=True)
         EMAIL_SENDER = config['EMAIL_SENDER']
         assert re.search(EMAIL_PATTERN, EMAIL_SENDER), \
@@ -217,7 +218,7 @@ def check_app_config(config):
         check_assert('SMTP_SERVER', '', str, non_empty=True)
         check_assert('SMTP_PORT', 0, int, allow_zero=False)
         check_assert('SMTP_OVER_SSL', False, bool)
-        check_assert('SMTP_CONNECTION_TIMEOUT', 10, int, allow_zero=False)
+        check_assert('SMTP_CONNECTION_TIMEOUT', 30, int, allow_zero=False)
 
     # Monitor & Alert
     check_assert('ENABLE_MONITOR', False, bool)
@@ -397,7 +398,7 @@ def check_slack_telegram(config, service):
         data = dict(chat_id=config['TELEGRAM_CHAT_ID'], text=text)
     r = None
     try:
-        r = session.post(url, data=data, timeout=20)
+        r = session.post(url, data=data, timeout=30)
         js = r.json()
         assert r.status_code == 200 and js['ok'] is True
     except Exception as err:
@@ -421,14 +422,14 @@ def check_email(config):
         smtp_server=config['SMTP_SERVER'],
         smtp_port=config['SMTP_PORT'],
         smtp_over_ssl=config.get('SMTP_OVER_SSL', False),
-        smtp_connection_timeout=config.get('SMTP_CONNECTION_TIMEOUT', 10),
+        smtp_connection_timeout=config.get('SMTP_CONNECTION_TIMEOUT', 30),
     )
     kwargs['to_retry'] = True
     kwargs['subject'] = 'Email alert enabled #scrapydweb'
     kwargs['content'] = json_dumps(dict(EMAIL_SENDER=config['EMAIL_SENDER'],
                                         EMAIL_RECIPIENTS=config['EMAIL_RECIPIENTS']))
 
-    logger.debug("Trying to send email (smtp_connection_timeout=%s)...", config.get('SMTP_CONNECTION_TIMEOUT', 10))
+    logger.debug("Trying to send email (smtp_connection_timeout=%s)...", config.get('SMTP_CONNECTION_TIMEOUT', 30))
     result, reason = send_email(**kwargs)
     if not result and os.environ.get('TEST_ON_CIRCLECI', 'False') == 'False':
         logger.debug("kwargs for send_email():\n%s", json_dumps(kwargs, sort_keys=False))

@@ -143,11 +143,11 @@ def handle_db(app):
 
 
 def handle_route(app):
-    def register_view(view, endpoint, url_defaults_list, with_node=True, final_slash=True):
+    def register_view(view, endpoint, url_defaults_list, with_node=True, trailing_slash=True):
         view_func = view.as_view(endpoint)
         for url, defaults in url_defaults_list:
             rule = '/<int:node>/%s' % url if with_node else '/%s' % url
-            if final_slash:
+            if trailing_slash:
                 rule += '/'
             if not with_node:
                 if defaults:
@@ -288,7 +288,7 @@ def handle_route(app):
         ('email/<channel_chatid_subject>/<text>', dict(opt='email')),
         ('email/<text>', dict(opt='email', channel_chatid_subject=None)),
         ('email', dict(opt='email', channel_chatid_subject=None, text=None)),
-    ], with_node=False, final_slash=False)
+    ], with_node=False, trailing_slash=False)
 
     # System
     from .views.system.settings import SettingsView
