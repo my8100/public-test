@@ -214,13 +214,14 @@ main>aside {
     padding-top: 18px;
     display: flex;
     flex-direction: column;
-    /* overflow-y: auto; */
-    overflow-y: hidden;
+    overflow-y: auto;
+    /* overflow-y: hidden; */
     /* flex-grow: 1; */
+    /* overflow-y: scroll; */
 }
 
 main>aside:hover {
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 main>aside h3 {

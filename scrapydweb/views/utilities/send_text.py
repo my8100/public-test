@@ -81,7 +81,7 @@ class SendTextApiView(BaseView):
             return
         self.EMAIL_KWARGS['subject'] = self.channel_chatid_subject
         self.EMAIL_KWARGS['content'] = self.text
-        result, reason = send_email(**self.EMAIL_KWARGS)
+        result, reason = send_email(to_retry=True, **self.EMAIL_KWARGS)
         if result is True:
             self.logger.debug("Sent to %s via Email", self.EMAIL_KWARGS['email_recipients'])
             self.js = dict(status=self.OK,
