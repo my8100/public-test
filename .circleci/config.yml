@@ -266,7 +266,6 @@ workflows:
       - py27:
           is-py27: true
 
-
       - py37-git-mysql:
           use-git: true
           use-mysql: true
