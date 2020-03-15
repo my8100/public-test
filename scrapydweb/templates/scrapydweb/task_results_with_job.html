@@ -91,7 +91,7 @@ var Main = {
   data() {
     return {
       size: {% if task_results.per_page > 10 %}'mini'{% else %}'—'{% endif %},
-      maxHeight: window.innerHeight - 200,
+      maxHeight: window.innerHeight - 228,
       currentPage: {{ task_results.page }},
       tableData: [
     {% for task_result in task_results.items %}
